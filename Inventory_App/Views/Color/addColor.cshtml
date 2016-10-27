@@ -1,0 +1,166 @@
+﻿@model Inventory_App.Models.Color
+
+@{
+    ViewBag.Title = "addColor";
+}
+
+<style>
+    #YearID, #Color_Id {
+        padding: 3%;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        margin-top: 5%;
+    }
+</style>
+
+
+<div id="page-wrapper">
+    @{
+        if (ViewBag.ColorExist != null)
+        {
+
+            if (ViewBag.ColorExist == "ColorExist")
+            {
+                <div class="alert alert-warning alert-dismissible animated bounceIn" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> Specified Color Already Exist in database. Please Check the List Below.
+                </div>
+            }
+
+            else if (ViewBag.ColorExist == "ColorExistButDeleted")
+            {
+                <div class="alert alert-warning alert-dismissible animated shake" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> Specified Color was deleted from the Current List. Please click the restore button to restore the color.
+                </div>
+            }
+
+        }
+
+        else if (ViewBag.restoreempty != null)
+        {
+            if (ViewBag.restoreempty == "true")
+            {
+                <div class="alert alert-warning alert-dismissible animated pulse" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Empty!</strong> There are/is no color(s) left to restore.
+                </div>
+            }
+        }
+    }
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Add Color</h1>
+
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+
+                        @Html.LabelFor(model => model.Color_Name, "Color Name", htmlAttributes: new { @class = "control-label col-md-offset-1 col-md-2" })
+
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.Color_Name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Color_Name, "", new { @class = "text-danger" })
+                        </div>
+
+                        <button id="alert" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+
+                        @if (ViewBag.colorCheck == "DelColorexist")
+                        {
+                            <a href="@Url.Action("restoreColor")" class="btn btn-warning"><i class="fa fa-repeat" aria-hidden="true"></i> Restore Color</a>
+
+                        }
+                        else
+                        {
+                            <button class="btn btn-warning" disabled="disabled">
+                                <i class="fa fa-repeat" aria-hidden="true"></i> Restore Color
+                            </button>
+                        }
+
+                    </div>
+                </div>
+
+            }
+
+            <div style="padding:0 10%;">
+                @{Html.RenderAction("_colorList", "Color");}
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /#page-wrapper -->
+
+
+    @section JavaScript {
+        <script type="text/javascript">
+
+            //-----------------  To stop entering space in textbox before value ---------------//
+
+            $(function () {
+                $('body').on('keydown', 'input', function (e) {
+                    console.log(this.value);
+                    if (e.which === 32 && this.value === '') {
+                        return false;
+                    }
+                });
+            });
+
+        //------------------------------------------------------------------------------//
+
+        //---------------  To stop value in textbox exceeding the length --------------//
+
+        jQuery(document).ready(function ($) {
+            var max = 20;
+            $('#Color_Name').keypress(function (e) {
+                if (e.which < 0x20) {
+                    // e.which < 0x20, then it's not a printable character
+                    // e.which === 0 - Not a character
+                    return;     // Do nothing
+                }
+                if (this.value.length == max) {
+                    e.preventDefault();
+                } else if (this.value.length > max) {
+                    // Maximum exceeded
+                    this.value = this.value.substring(0, max);
+                }
+            });
+        }); //end if ready(fn)
+
+
+        //------------------------------------------------------------------------------//
+
+        //------  To enable the Add Color Button only when text box is not empty ------//
+
+        document.getElementById('alert').disabled = true;
+
+        document.getElementById("Color_Name").onkeyup = function () {
+            if (this.value.length > 0) {
+                document.getElementById('alert').disabled = false;
+            }
+
+            else {
+                document.getElementById('alert').disabled = true;
+            }
+        }
+
+        //------------------------------------------------------------------------------//
+    </script>
+}

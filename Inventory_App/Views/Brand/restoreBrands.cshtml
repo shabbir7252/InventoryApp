@@ -1,0 +1,88 @@
+﻿
+@model IEnumerable<Inventory_App.Models.Brand>
+
+@{
+    ViewBag.Title = "Restore Brands";
+}
+
+<style>
+    .action_button {
+        margin: 0 5px;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+            .action_button:hover, .action_button a:hover {
+                color: #8e44ad;
+            }
+
+        .action_button:nth-child(2):hover, .action_button:nth-child(2) a:hover {
+            color: #c0392b;
+        }
+</style>
+
+<div id="page-wrapper">
+    @{
+        if (ViewBag.restoreempty != null)
+        {
+            if (ViewBag.restoreempty == "false")
+            {
+                <div class="alert alert-success alert-dismissible animated pulse" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> @ViewBag.Brandname wiped out Successfully!
+                </div>
+            }
+        }
+
+        if (ViewBag.alertexistInkModel != null)
+        {
+            <div class="alert alert-warning alert-dismissible animated slideInDown" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @ViewBag.alertexistInkModel
+            </div>
+        }
+    }
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6"><h1>Restore Brand</h1></div>
+                <div class="col-lg-6"><a href="@Url.Action("AddBrand")"><h2 class="text-right">Back to List</h2></a></div>
+            </div>
+
+
+        </div>
+        <div class="panel-body">
+
+            <table class="table table-hover">
+                <tr>
+                    <th class="info">Brand Name</th>
+                    <th class="info">Year Added</th>
+                    <th class="info">Action</th>
+                </tr>
+
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Brand_Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Year.Year1)
+                                @*@Convert.ToString(string.Format("{0:dd MMM yy}", item.Date))*@
+                            </td>
+                            <td>
+                                <span class="action_button"><i class="fa fa-repeat" aria-hidden="true"></i> @Html.ActionLink("Restore", "restoreDeletedBrand", new { id = item.Brand_Id })</span>
+                                |
+                                <span class="action_button"><i class="fa fa-eraser" aria-hidden="true"></i> @Html.ActionLink("Wipe Out", "wipeOutBrand", new { id = item.Brand_Id })</span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>

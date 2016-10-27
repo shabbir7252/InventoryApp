@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Inventory_App.Models.AddInktoStore>
+
+<style>
+    .action_button {
+        margin: 0 5px;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+            .action_button:hover, .action_button a:hover {
+                color: #8e44ad;
+            }
+
+        .action_button:nth-child(2):hover, .action_button:nth-child(2) a:hover {
+            color: #c0392b;
+        }
+</style>
+
+
+
+<table id="myTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th class="info">Store</th>
+            <th class="info">Model Name</th>
+            <th class="info">Year</th>
+            <th class="info">Last Updated On</th>
+            <th class="info">Quantity</th>
+            <th class="Hide-Sort">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            var className = "";
+
+            if (TempData["AddedItemId"] != null && (int)TempData["AddedItemId"] == item.InkId)
+            {
+                className = "alert-info";
+            }
+
+            <tr class="@className">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Store.Store1)
+                </td>
+
+                <td>
+
+                    @{
+                        string str = Html.DisplayFor(modelItem => item.Model.Color.Color_Name).ToString();
+                        string firstLetters = "";
+
+                        foreach (var part in str.Split(' '))
+                        {
+                            firstLetters += part.Substring(0, 1);
+                        }
+                        str = str.Replace(" ", "");
+                    }
+                    <div id="colorBadge" class="badge @str">@firstLetters</div>
+                    &nbsp;
+                    <label>@Html.DisplayFor(modelItem => item.Model.Model_Name)</label>
+                    &nbsp;
+                    <div class="badge">@Html.DisplayFor(modelItem => item.Model.Brand.Brand_Name)</div>
+
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year.Year1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "EditBrand", new { id = item.InkId })</span>
+                    @*|
+                    <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.InkId })</span>*@
+                </td>
+            </tr>
+                        }
+    <tbody>
+</table>

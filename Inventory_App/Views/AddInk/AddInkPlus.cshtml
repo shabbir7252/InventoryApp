@@ -1,0 +1,237 @@
+﻿@model Inventory_App.Models.AddInktoStore
+
+@{
+    ViewBag.Title = "AddInk";
+}
+
+<style>
+    #Model_Id, #YearID, #Quantity {
+        padding: 0 10%;
+    }
+
+    #Store_name {
+        padding: 0 5%;
+        width: 100%;
+    }
+
+    #alert {
+        margin-top: 25px;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
+</style>
+
+<div id="page-wrapper">
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Add Ink in Store</h1>
+
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="row">
+
+                            <div class="col-lg-2 col-lg-offset-2">
+                                <label class="control-label">Store</label>
+                                @Html.DropDownList("storeList", null, "Select Store...", new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="control-label">Model</label>
+                                @Html.DropDownListFor(m => m.Model_Id, (SelectList)ViewBag.ModelList, "Select Model...", new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="control-label">Year</label>
+                                @Html.DropDownListFor(m => m.YearID, (SelectList)ViewBag.YearList, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-md-1">
+                                <label class="control-label">Quantity</label>
+                                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control", @min = "1" } })
+                            </div>
+
+                            <div class="col-md-1">
+                                <button id="alert" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            }
+            <hr />
+            <div style="padding:0 5%; margin-top:5%">
+                @{Html.RenderAction("_AddInkToStoreList", "AddInk");}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section JavaScript {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".alert-info").focus();
+
+            $('#myTable').DataTable({
+                "aaSorting": [3, 'desc'],
+                fixedHeader: true,
+                dom: 'lfBtipr',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, 'colvis'
+                ]
+
+            });
+
+            var ModelID = document.getElementById('Model_Id'); YearID
+            ModelID.disabled = true;
+            var YearID = document.getElementById('YearID');
+            YearID.disabled = true;
+            var Quantity = document.getElementById('Quantity');
+            Quantity.disabled = true;
+            var btnAlert = document.getElementById('alert');
+            btnAlert.disabled = true;
+
+            $(function () {
+                $('#storeList').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        ModelID.disabled = false;
+                    } else {
+                        ModelID.disabled = true;
+                        ModelID.selectedIndex = 0;
+                        YearID.disabled = true;
+                        Quantity.disabled = true;
+                        btnAlert.disabled = true;
+                    }
+                });
+            });
+
+            $(function () {
+                $('#Model_Id').change(function () {
+                    var value = $(this).val();
+                    var QuantityValue = $('#Quantity').val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        YearID.disabled = false;
+                        Quantity.disabled = false;
+                    } else {
+                        YearID.disabled = true;
+                        Quantity.disabled = true;
+                        btnAlert.disabled = true;
+                    }
+                });
+            });
+
+            $(function () {
+                $('#Quantity').bind('mouseup change', function () {
+                    var value = $(this).val();
+                    if (value > '0') {
+                        btnAlert.disabled = false;
+                    }
+                    else {
+                        btnAlert.disabled = true;
+                    }
+                });
+            });
+
+            $(function () {
+                $('#Quantity').keyup(function () {
+                    var value = $(this).val();
+
+                    if (value == '0' || value == '00' || value == "") {
+                        btnAlert.disabled = true;
+                    }
+
+                    else {
+                        btnAlert.disabled = false;
+                    }
+                });
+            });
+
+
+
+
+            //---------------  To stop value in textbox exceeding the length --------------//
+
+            jQuery(document).ready(function ($) {
+                var max = 2;
+                $('#Quantity').keypress(function (e) {
+                    if (e.which < 0x20) {
+                        // e.which < 0x20, then it's not a printable character
+                        // e.which === 0 - Not a character
+                        return;     // Do nothing
+                    }
+                    if (this.value.length == max) {
+                        e.preventDefault();
+                    } else if (this.value.length > max) {
+                        // Maximum exceeded
+                        this.value = this.value.substring(0, max);
+                    }
+                });
+            });
+        });
+
+
+        //------------------------------------------------------------------------------//
+    </script>
+
+
+
+}

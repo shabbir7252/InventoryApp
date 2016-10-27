@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Inventory_App.Models.Color>
+
+<style>
+    .action_button {
+        margin: 0 5px;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+            .action_button:hover, .action_button a:hover {
+                color: #8e44ad;
+            }
+
+            .action_button:nth-child(2):hover, .action_button:nth-child(2) a:hover {
+                color: #c0392b;
+            }
+</style>
+
+<table class="table table-hover">
+    <tr>
+        <th class="info">Color Name</th>
+        <th class="info">Date Added</th>
+        <th class="info">Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color_Name)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.Date)*@
+                @Convert.ToString(string.Format("{0:dd MMM yy}", item.Date))
+            </td>
+            <td>
+                <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "Editcolor", new { id = item.Color_Id })</span>
+                |
+                <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.Color_Id })</span>
+            </td>
+        </tr>
+    }
+
+</table>

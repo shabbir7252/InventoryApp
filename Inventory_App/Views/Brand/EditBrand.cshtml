@@ -1,0 +1,70 @@
+﻿@model Inventory_App.Models.Brand
+
+@{
+    ViewBag.Title = "EditBrand";
+}
+
+<style>
+    #YearID {
+        padding: 6px;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+</style>
+
+
+<div id="page-wrapper">
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6 text-left">
+                    <h1>Edit Brand</h1>
+                </div>
+
+                <div class="col-lg-6 text-right">
+                    <h3>
+                        <a style="text-decoration: none;" href="@Url.Content("/Brand/AddBrand")"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to List</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                    @Html.HiddenFor(model => model.Brand_Id)
+                    @Html.HiddenFor(model => model.YearID)
+
+
+
+                    <div class="row">
+                        <div class="col-lg-3 control-label">Current Brand Name :</div>
+                        <div class="col-lg-3"><label>@Html.DisplayFor(item => item.Brand_Name)</label></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-3 control-label">Change Brand Name to :</div>
+                            <div class="col-lg-3">@Html.EditorFor(model => model.Brand_Name, new { htmlAttributes = new { @class = "form-control" } })</div>
+                            <button class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="406261bd5e0940c38aa7e7e03d89b9e8" Name="Diagram1">
+        <EntityTypeShape EntityType="InventoryAppModel.AddInktoStore" Width="1.5" PointX="5.25" PointY="4.875" />
+        <EntityTypeShape EntityType="InventoryAppModel.Brand" Width="1.5" PointX="3" PointY="12.75" />
+        <EntityTypeShape EntityType="InventoryAppModel.Color" Width="1.5" PointX="3" PointY="9.75" />
+        <EntityTypeShape EntityType="InventoryAppModel.Country" Width="1.5" PointX="0.75" PointY="2.625" />
+        <EntityTypeShape EntityType="InventoryAppModel.IssueInk" Width="1.5" PointX="7.5" PointY="5" />
+        <EntityTypeShape EntityType="InventoryAppModel.Model" Width="1.5" PointX="5.25" PointY="12.375" />
+        <EntityTypeShape EntityType="InventoryAppModel.Store" Width="1.5" PointX="3" PointY="5" />
+        <EntityTypeShape EntityType="InventoryAppModel.StoreUser" Width="1.5" PointX="5.25" PointY="1.25" />
+        <EntityTypeShape EntityType="InventoryAppModel.User" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="InventoryAppModel.Year" Width="1.5" PointX="0.75" PointY="5.25" />
+        <AssociationConnector Association="InventoryAppModel.FK_AddInk_Model" />
+        <AssociationConnector Association="InventoryAppModel.FK_AddInk_Store" />
+        <AssociationConnector Association="InventoryAppModel.FK_AddInk_Years" />
+        <AssociationConnector Association="InventoryAppModel.FK_IssueInk_AddInktoStore" />
+        <AssociationConnector Association="InventoryAppModel.FK_Brand_Years" />
+        <AssociationConnector Association="InventoryAppModel.FK_Model_Brand" />
+        <AssociationConnector Association="InventoryAppModel.FK_Model_Color" />
+        <AssociationConnector Association="InventoryAppModel.FK_Store_Countries" />
+        <AssociationConnector Association="InventoryAppModel.FK_IssueInk_Years" />
+        <AssociationConnector Association="InventoryAppModel.FK_Store_Years" />
+        <AssociationConnector Association="InventoryAppModel.FK_StoreUsers_Store" />
+        <AssociationConnector Association="InventoryAppModel.FK_StoreUsers_User" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

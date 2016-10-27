@@ -1,0 +1,50 @@
+﻿
+@model IEnumerable<Inventory_App.Models.Model>
+
+<style>
+    .action_button {
+        margin: 0 5px;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+            .action_button:hover, .action_button a:hover {
+                color: #8e44ad;
+            }
+
+        .action_button:nth-child(2):hover, .action_button:nth-child(2) a:hover {
+            color: #c0392b;
+        }
+</style>
+
+<table class="table table-hover text-center">
+    <tr>
+        <th class="info text-center">Brand</th>
+        <th class="info text-center">Color</th>
+        <th class="info text-center">Ink Model</th>
+        <th class="info text-center">Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand.Brand_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color.Color_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model_Name)
+            </td>
+            <td>
+                <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "EditInkModel", new { id = item.Model_Id })</span>
+                |
+                <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.Model_Id })</span>
+            </td>
+        </tr>
+    }
+
+</table>

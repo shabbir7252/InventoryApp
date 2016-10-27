@@ -1,0 +1,412 @@
+﻿
+@model Inventory_App.Models.IssueInk
+
+@{
+    ViewBag.Title = "Issue Ink To Employee";
+}
+
+<style>
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin:0 0 2% 18%;
+    }
+
+    
+</style>
+
+<div id="page-wrapper">
+
+    @{
+        if (ViewBag.ImageExist != null)
+        {
+            if (ViewBag.ImageExist == "ImageExist")
+            {
+                <div class="alert alert-warning alert-dismissible animated bounceIn" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong> Specified Image Already Exist.
+                </div>
+            }
+        }
+
+        if (ViewBag.NullExist != null)
+        {
+            if (ViewBag.NullExist == "NullExist")
+            {
+                <div class="alert alert-danger alert-dismissible animated bounceIn" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>HTTP Error 400.0 - Bad Request!</strong> The request cannot be routed because it does not exist in the system. However,
+                    if you think its a server mistake than contact System Administrator.
+                </div>
+            }
+        }
+    }
+
+
+    @if (ViewBag.id != null)
+    {
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="IssueAttachmentModal">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3 class="text-center">Attach Consumptive Custody Receipt</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                @{
+                                    int id = 0;
+                                    id = ViewBag.id;
+                                    using (Html.BeginForm("fileUpload", "IssueInk", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <input type="file" id="file" name="file">
+                                            </div>
+                                        </div>
+                                        <input id="AttachmentID" type="text" hidden value="@id" name="AttachmentID" />
+                                        <div class="col-lg-3">
+                                            <button id="attachmentSave" class="btn btn-primary">save</button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <hr />
+                        <h3 class="text-center">Or Link From the Scanned Image Below</h3>
+                        <div class="row">
+
+                            <br />
+                            @{
+                                using (Html.BeginForm("LinkUpdate", "IssueInk", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    id = ViewBag.id;
+                                    <div class="col-lg-4 col-lg-offset-1 ">
+                                        @Html.DropDownList("searchFileNamesList", null, "Select Filename...", new { @class = "form-control" })
+                                    </div>
+                                    <input id="linkAttachmentID" type="text" hidden value="@id" name="linkAttachmentID" />
+                                    <div class="col-lg-6">
+                                        <input type="submit" id="btnlinkSubmit" class="btn btn-primary" value="Submit" />
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <img id="blah" src="~/Content/Images/NA_icon.jpg" alt="your image" style="width:100%" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal2">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Second Modal title</h4>
+                    </div><div class="container"></div>
+                    <div class="modal-body">
+                        Content for the dialog / modal goes here.
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" data-dismiss="modal" class="btn">Close</a>
+                        <a href="#" class="btn btn-primary">Save changes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                }
+
+    <div class="panel panel-info">
+
+        <div class="panel-heading">
+            <h1>Issue Ink</h1>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-2 col-lg-offset-3">
+                    <label style="margin-top:5px">Search For Employee: </label>
+                </div>
+                <div class="col-lg-3">
+                    @Html.TextBox("Text1", null, new { @id = "txtSearchemployee", @class = "form-control" })
+                </div>
+                <div class="col-lg-2">
+                    <input class="btn btn-danger" type="submit" id="submitId" value="Search" onclick="location.href='@Url.Action("SearchEmployee", "IssueInk")?text=' + encodeURIComponent(document.getElementById('txtSearchemployee').value);" />
+                </div>
+            </div>
+
+            
+
+            <div class="row">
+                @if (ViewData["nameList"] != null)
+                {
+                    using (Html.BeginForm())
+                    {
+                        <hr />
+                        <div class="animated pulse">
+                            <div class="col-lg-3" style="margin-left:60px">
+                                <label>Employee Name</label>
+                                @Html.DropDownList("nameList", null, "Select Employee...", new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label>Model </label>
+                                @Html.DropDownList("InkList", null, "Select Model...", new { @class = "form-control", @id = "modelchange" })
+                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label label-warning" id="storeQuantity"></span></label>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label>Quantity</label>
+                                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control", @id = "AssignQuantity", @max = "", @min = "1" } })
+
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label>Year</label>
+                                @Html.DropDownListFor(m => m.YearID, (SelectList)ViewBag.YearList, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button type="submit" style="margin-top: 23px;" class="btn btn-success" id="issueInk">Issue Ink</button>
+                            </div>
+                        </div>
+
+                    }
+                }
+
+            </div>
+
+            <hr />
+
+            <div style="padding:0 5%;">
+                @{Html.RenderAction("_issuedInkList", "IssueInk");}
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+@section JavaScript {
+    <script type="text/javascript">
+
+
+        var focusKeyId = "@ViewBag.focusKeyId";
+        $(document).ready(function () {
+
+            $('#myTable').DataTable({
+                fixedHeader: true,
+                dom: 'lfBtipr',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, 'colvis'
+                ]
+
+            });
+
+            
+
+            if (focusKeyId != null || focusKeyId != "") {
+                id = focusKeyId;
+                $("#" + id).focus();
+            }
+
+
+
+            //-----------------  To stop entering space in textbox before value ---------------//
+
+            $("input").on("keypress", function (e) {
+                if (e.which === 32 && !this.value.length)
+                    e.preventDefault();
+            });
+
+            //------------------------------------------------------------------------------//
+
+            $('#txtSearchemployee').keypress(function (event) {
+                var inputValue = event.which;
+                // allow letters and whitespaces only.
+                if (!(inputValue >= 65 && inputValue <= 122) && (inputValue != 32 && inputValue != 0)) {
+                    event.preventDefault();
+                }
+            });
+
+            $('#AssignQuantity').bind('keyup keypress', function (evt) {
+                return false;
+            });
+
+            //-----------------  To make the quantity to hold atleast 1 number ---------------//
+
+            //$("#AssignQuantity").change(function () {
+            //    if (this.value < 1) this.value = 1;
+            //});
+
+            //------------------------------------------------------------------------------//
+
+            //------  To enable the Add Color Button only when text box is not empty ------//
+
+            document.getElementById('submitId').disabled = true;
+
+            document.getElementById("txtSearchemployee").onkeyup = function () {
+                if (this.value.length > 0) {
+                    document.getElementById('submitId').disabled = false;
+                } else {
+                    document.getElementById('submitId').disabled = true;
+                }
+            }
+
+            //------------------------------------------------------------------------------//
+
+            //----------------  To enable/Disable if selection is not made ----------------//
+
+            document.getElementById('modelchange').disabled = true;
+            document.getElementById('AssignQuantity').disabled = true;
+            document.getElementById('YearID').disabled = true;
+            document.getElementById('issueInk').disabled = true;
+
+            var dropDown = document.getElementById("modelchange");
+            var AQ = document.getElementById("AssignQuantity");
+
+            $(function () {
+                $('#nameList').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        dropDown.disabled = false;
+
+                    } else {
+                        dropDown.disabled = true;
+                        dropDown.selectedIndex = 0;
+                        AQ.disabled = true;
+                        document.getElementById('YearID').disabled = true;
+                        document.getElementById('issueInk').disabled = true;
+                    }
+                })
+            });
+
+            $(function () {
+                $('#modelchange').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        document.getElementById('YearID').disabled = false;
+                        document.getElementById('issueInk').disabled = false;
+                    } else {
+                        document.getElementById('YearID').disabled = true;
+                        document.getElementById('issueInk').disabled = true;
+                    }
+                });
+            });
+
+            $(function () {
+                $('#file').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        document.getElementById('attachmentSave').disabled = false;
+                    } else {
+                        document.getElementById('attachmentSave').disabled = true;
+                    }
+                });
+            });
+
+            //------------------------------------------------------------------------------//
+
+            //-----------------  To get the max value and assign the max value to quantity ---------------//
+
+            $("#modelchange").change(function () {
+                $("#AssignQuantity").val("1");
+                $("#AssignQuantity").prop('disabled', false);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetQuantity")', // we are calling json method
+                    dataType: 'json',
+                    data: { Text: $("#modelchange").val() },
+                    success: function (maxvalue) {
+                        if (maxvalue <= 0) {
+                            $("#AssignQuantity").prop('disabled', true);
+                        }
+                        else {
+                            $("#AssignQuantity").attr("max", maxvalue);
+
+                            $('#storeQuantity').text("Available Ink : " + maxvalue);
+                        }
+                    },
+                    error: function (ex) {
+                        alert('Failed to load Max Value. Please Contact Your System Administrator' + ex);
+                    }
+
+
+                });
+                return false;
+            })
+
+            //------------------------------------------------------------------------------//
+        });
+
+
+        document.getElementById('btnlinkSubmit').disabled = true;
+        $("#searchFileNamesList").change(function () {
+            if ($("#searchFileNamesList").val() != null) {
+                if ($("#searchFileNamesList").val() == "") {
+                    document.getElementById('btnlinkSubmit').disabled = true;
+                    $('#blah').attr('src', "/Content/Images/NA_icon.jpg");
+                }
+                else {
+                    document.getElementById('btnlinkSubmit').disabled = false;
+                    var input = "/Content/IssueImage/" + $("#searchFileNamesList").val();
+                    $('#blah').attr('src', input);
+                }
+            }
+        });
+
+
+
+
+
+    </script>
+}

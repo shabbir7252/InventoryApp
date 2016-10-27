@@ -1,0 +1,142 @@
+﻿@using Inventory_App.Models;
+@model IEnumerable<Inventory_App.Models.IssueInk>
+
+<style>
+    .action_button {
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+    .fa-trash-o, .fa-eye, .fa-paperclip, .fa-trash {
+        font-size: 20px;
+    }
+
+    .fa-trash-o {
+        color: red;
+    }
+
+    .fa-eye {
+        color: #8E44AD;
+    }
+
+    .fa-paperclip {
+        color: #27ae60;
+    }
+
+    .table {
+        border-right: none;
+        border-bottom: none;
+    }
+
+
+</style>
+
+
+<table class="table table-bordered table-hover" id="myTable">
+    <thead>
+        <tr>
+
+            <th class="Hide-Sort">Del</th>
+            <th class="info">Employee Name</th>
+            <th class="info">Model Name</th>
+            <th class="info">Year</th>
+            <th class="info">Issued On</th>
+            <th class="info">QTY</th>
+            <th class="Hide-Sort">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td style="padding:14px 0 0 8px; border-top:none; border-right:none; border-bottom:none; width:45px;">
+                    <span class="action_button">
+                        <a title="Delete Issued Ink" href="@Url.Action("DeleteIssueInk","IssueInk",new { id = item.IssueInkId })">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee)
+                </td>
+
+                @using (InventoryAppEntities db = new InventoryAppEntities())
+                {
+                    string brandName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Brand.Brand_Name.ToString();
+                    string modelName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Model_Name.ToString();
+                    string colorName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Color.Color_Name.ToString();
+                    <td>
+                        <span class="badge">@brandName</span>
+                        <label>@modelName</label>
+                        <span class="badge">@colorName</span>
+
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year.Year1)
+                </td>
+
+                <td>
+
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+
+                <td>
+
+                    <span class="action_button">
+                        <a id="@item.IssueInkId" title="Attach Document" href="@Url.Action("attach", "IssueInk", new { id = item.IssueInkId })">
+                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                        </a>
+                    </span>
+
+                    @{
+
+                        InventoryAppEntities db2 = new InventoryAppEntities();
+                        if (db2.IssueInks.Single(a => a.IssueInkId == item.IssueInkId).Attachment != null)
+                        {
+                            string name = db2.IssueInks.Single(a => a.IssueInkId == item.IssueInkId).Attachment.ToString();
+                            if (name != "" || name != null)
+                            {
+                                <span>|</span>
+                                <a href="#" title="View Document" data-toggle="modal" data-target="#myModal"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                <span>|</span>
+                                <span class="action_button">
+                                    <a title="Delete Document" href="@Url.Action("deleteFile", "IssueInk", new { id = item.IssueInkId })">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </span>
+
+                        <!-- Modal -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content" style="width:130%">
+                                            <img data-dismiss="modal" style="width:100%" src="~/Content/IssueImage/@name" alt="" />
+                                            <div class="modal-footer" style="width:100%">
+                                                <a href="~/Content/IssueImage/@name" target="_blank">Click Here to Open Image in New Tab</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+
+
+                </td>
+
+            </tr>
+                        }
+    </tbody>
+
+</table>
