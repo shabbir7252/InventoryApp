@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Inventory_App.Models.Store>
+
+@{
+    ViewBag.Title = "SelectPermission";
+}
+
+<style>
+    input[type=checkbox] {
+        display: inline-block;
+        margin-left: 40px;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+</style>
+
+<div id="page-wrapper">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6 text-left">
+                    <h2>Set Store Permission</h2>
+                </div>
+
+                <div class="col-lg-6 text-right">
+                    <h3>
+                        <a style="text-decoration: none;" href="@Url.Content("~/Store/SetStorePermission")"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to List</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <h3 style="margin:0 0 20px 40px">Username : @ViewBag.UserName </h3>
+
+            @using (Html.BeginForm("SavePermission", "store", FormMethod.Post))
+            {
+
+                <input type="hidden" value="@ViewBag.user_id" name="UserId" />
+                foreach (var item in Model)
+                {
+                    var count = item.StoreUsers.Where(u => u.UserId == @ViewBag.user_id).Count();
+                    if (count > 0)
+                    {
+                        foreach (var storeuser in item.StoreUsers.Where(u => u.UserId == @ViewBag.user_id))
+                        {
+                            if (item.Store_Id == storeuser.Store_Id)
+                            {
+                                @Html.CheckBox(item.Store1, storeuser.IsPermitted);
+                                <label> @Html.DisplayName(item.Store1) </label>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        @Html.CheckBox(item.Store1, false);
+                        <label>
+                            @Html.DisplayName(item.Store1)
+                        </label>
+                    }
+                }
+                <input type="submit" class="btn btn-info" , style="margin-left:30px" value="save" />
+                        @*@Html.ActionLink("Save", "SavePermission","Store",null, new { @class= "btn btn-info", @style = "margin-left:30px" })*@
+            }
+
+        </div>
+    </div>
+</div>

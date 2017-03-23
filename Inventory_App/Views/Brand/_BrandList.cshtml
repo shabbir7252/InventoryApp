@@ -20,28 +20,31 @@
 
 
 
-<table class="table table-hover">
-    <tr>
-        <th class="info">Brand Name</th>
-        <th class="info">Year</th>
-        <th class="info">Action</th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<table class="table table-hover" id="myTable">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand_Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year.Year1)
-            </td>
-            <td>
-                <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "EditBrand", new { id = item.Brand_Id })</span>
-                |
-                <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.Brand_Id })</span>
-            </td>
+            <th class="info">Brand Name</th>
+            <th class="info">Year</th>
+            <th class="info Hide-Sort">Action</th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brand_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year.Year1)
+                </td>
+                <td>
+                    <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "EditBrand", new { id = item.Brand_Id })</span>
+                    |
+                    <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.Brand_Id })</span>
+                </td>
+            </tr>
+        }
+    </tbody>
 
 </table>

@@ -5,7 +5,7 @@
 }
 
 <style>
-    #Store_Id, #Brand_Id, #Color_Id {
+    #Store_Id, #Brand_Id, #ColorList {
         padding: 5%;
     }
 
@@ -34,7 +34,7 @@
 
                 <div class="col-lg-6 text-right">
                     <h3>
-                        <a style="text-decoration: none;" href="@Url.Content("/Model/addInkModel")"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to List</a>
+                        <a style="text-decoration: none;" href="@Url.Content("~/Model/addInkModel")"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to List</a>
                     </h3>
                 </div>
             </div>
@@ -73,7 +73,8 @@
                         <div class="col-lg-2">
                             <div class="col-lg-12"><label>Color Name</label></div>
                             <div class="col-md-12">
-                                @Html.DropDownListFor(m => m.Color_Id, (SelectList)ViewBag.ColorList)
+                                @*@Html.DropDownListFor(m => m.Color_Id, (SelectList)ViewBag.ColorList)*@
+                                @Html.DropDownList("ColorList", null, new { @class = "form-control" })
                             </div>
                         </div>
 
@@ -91,7 +92,7 @@
 </div>
 
 
-@section JavaScriptToModel {
+@section JavaScript {
 
     <script type="text/javascript">
 

@@ -18,6 +18,7 @@ namespace Inventory_App.Models
         public AddInktoStore()
         {
             this.IssueInks = new HashSet<IssueInk>();
+            this.Damages = new HashSet<Damage>();
         }
     
         public int InkId { get; set; }
@@ -33,5 +34,7 @@ namespace Inventory_App.Models
         public virtual Year Year { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueInk> IssueInks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Damage> Damages { get; set; }
     }
 }

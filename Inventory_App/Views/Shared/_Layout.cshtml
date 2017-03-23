@@ -18,6 +18,8 @@
 
     @Styles.Render("~/Content/bootstrap")
 
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
     @Styles.Render("~/Content/Stylesheet/metisMenu")
 
     @Styles.Render("~/Content/Stylesheet/FontAwesome")
@@ -27,7 +29,7 @@
     @Styles.Render("~/Content/Stylesheet/LocalStyles")
 
     @*<link href="//cdnjs.cloudflare.com/ajax/libs/timelinejs/2.36.0/css/timeline.css" rel="stylesheet" type="text/css" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" rel="stylesheet" type="text/css" />*@
+        <link href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" rel="stylesheet" type="text/css" />*@
 
 </head>
 
@@ -38,7 +40,6 @@
 
         <div id="wrapper">
 
-            <!-- Navigation -->
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -51,162 +52,20 @@
                         <img class="system-logo" src="~/Content/Images/Logo.png" />
                     </a>
                 </div>
-                <!-- /.navbar-header -->
 
                 <ul class="nav navbar-top-links navbar-right">
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-envelope fa-fw"></i> Message  <i class="fa fa-caret-down"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-messages">
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <strong>John Smith</strong>
-                                        <span class="pull-right text-muted">
-                                            <em>Yesterday</em>
-                                        </span>
-                                    </div>
-                                    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <strong>John Smith</strong>
-                                        <span class="pull-right text-muted">
-                                            <em>Yesterday</em>
-                                        </span>
-                                    </div>
-                                    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <strong>John Smith</strong>
-                                        <span class="pull-right text-muted">
-                                            <em>Yesterday</em>
-                                        </span>
-                                    </div>
-                                    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a class="text-center" href="#">
-                                    <strong>Read All Messages</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- /.dropdown-messages -->
-                    </li>
-                    <!-- /.dropdown -->
-                    @*
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-tasks">
-                                <li>
-                                    <a href="#">
-                                        <div>
-                                            <p>
-                                                <strong>Task 1</strong>
-                                                <span class="pull-right text-muted">40% Complete</span>
-                                            </p>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                                    <span class="sr-only">40% Complete (success)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">
-                                        <div>
-                                            <p>
-                                                <strong>Task 2</strong>
-                                                <span class="pull-right text-muted">20% Complete</span>
-                                            </p>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                                    <span class="sr-only">20% Complete</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">
-                                        <div>
-                                            <p>
-                                                <strong>Task 3</strong>
-                                                <span class="pull-right text-muted">60% Complete</span>
-                                            </p>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                                    <span class="sr-only">60% Complete (warning)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">
-                                        <div>
-                                            <p>
-                                                <strong>Task 4</strong>
-                                                <span class="pull-right text-muted">80% Complete</span>
-                                            </p>
-                                            <div class="progress progress-striped active">
-                                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                                    <span class="sr-only">80% Complete (danger)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a class="text-center" href="#">
-                                        <strong>See All Tasks</strong>
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                            /.dropdown-tasks
-                        </li>*@
-                    <!-- /.dropdown -->
-
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-user fa-fw"></i> @Session["LoggedUserFullname"] <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
+                            @*<li class="divider"></li>*@
                             <li>
-                                <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="@Url.Content("/Default/logout")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <a href="@Url.Content("~/Default/logout")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                             </li>
                         </ul>
-                        <!-- /.dropdown-user -->
                     </li>
-                    <!-- /.dropdown -->
                 </ul>
-                <!-- /.navbar-top-links -->
 
                 <div class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
@@ -220,79 +79,95 @@
                                         </button>
                                     </span>
                                 </div>
-                                <!-- /input-group -->
                             </li>
                             <li>
-                                <a href="@Url.Content("/Default/index")"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                                <a href="@Url.Content("~/Default/index")"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                             </li>
-                            @*
-                                <li>
-                                    <a href="index.html"><i class="fa fa-globe fa-fw"></i> Country</a>
-                                </li>*@
-                            <li>
-                                <a href="@Url.Content("/Store/AddStore")"><i class="fa fa-building fa-fw"></i> Store</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-desktop fa-fw"></i> Devices<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
+                            @if (Session["IsSuperAdmin"] != null)
+                            {
+                                if (Session["IsSuperAdmin"].ToString() == "True")
+                                {
                                     <li>
-                                        <a href="#">Masters</a>
-                                        <ul class="nav nav-third-level">
+                                        <a href="#"><i class="fa fa-user-secret fa-fw"></i>Admin Center<span class="fa arrow"></span></a>
+                                        <ul class="nav nav-second-level">
                                             <li>
-                                                @Html.ActionLink("Add Brand", "AddBrand", "Brand")
+                                                <a href="#">Masters<span class="fa arrow"></span></a>
+                                                <ul class="nav nav-third-level">
+                                                    <li>
+                                                        @Html.ActionLink("Manage Store", "AddStore", "Store")
+                                                    </li>
+                                                    <li>
+                                                        @Html.ActionLink("Manage Brand", "AddBrand", "Brand")
+                                                    </li>
+                                                    <li>
+                                                        @Html.ActionLink("Manage Ink Model", "addInkModel", "Model")
+                                                    </li>
+                                                    <li>
+                                                        @Html.ActionLink("Manage Device Type", "addInkModel", "Model")
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="#">Configuration<span class="fa arrow"></span></a>
+                                                <ul class="nav nav-third-level">
+                                                    <li>
+                                                        @Html.ActionLink("Set Permission", "SetStorePermission", "Store")
+                                                    </li>
+                                                </ul>
                                             </li>
                                         </ul>
+
                                     </li>
-                                    <li>
-                                        <a href="morris.html">Morris.js Charts</a>
-                                    </li>
+                                }
+                            }
+
+                            @*<li>
+                                <a href="#"><i class="fa fa-desktop fa-fw"></i> Devices<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
                                 </ul>
-                            </li>
+                            </li>*@
+
                             <li>
                                 <a href="#"><i class="fa fa-tasks fa-fw"></i> Ink Cartridge<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        <a href="#">Ink Masters<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                @Html.ActionLink("Ink Model", "addInkModel", "Model")
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink("Ink Color", "addColor", "Color")
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        @Html.ActionLink("Add Ink to Store", "AddInkPlus", "AddInk")
+                                        @Html.ActionLink("Ink Inventory", "AddInkPlus", "AddInk")
                                     </li>
                                     <li>
                                         @Html.ActionLink("Issue Ink", "Index", "IssueInk")
                                     </li>
                                     <li>
-                                        <a href="login.html">Damaged</a>
-                                    </li>
-                                    <li>
-                                        <a href="login.html">Lost & Found</a>
-                                    </li>
-                                    <li>
-                                        <a href="login.html">Transfer</a>
+                                        <a href="#">Damaged Ink<span class="fa arrow"></span></a>
+                                        <ul class="nav nav-third-level">
+                                            <li>
+                                                @Html.ActionLink("Add Damaged", "Index", "Damage")
+                                            </li>
+
+                                            <li>
+                                                @Html.ActionLink("Replaced Ink", "replacedDamagedInk", "Damage")
+                                            </li>
+
+                                            <li>
+                                                @Html.ActionLink("Disposed Ink", "disposedDamagedInk", "Damage")
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
 
                             </li>
 
-                            <li>
-                                <a href="#"><i class="fa fa-keyboard-o fa-fw"></i> Accesories<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="blank.html">Blank Page</a>
-                                    </li>
-                                    <li>
-                                        <a href="login.html">Login Page</a>
-                                    </li>
-                                </ul>
+                            @*<li>
+                                    <a href="#"><i class="fa fa-keyboard-o fa-fw"></i> Accesories<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li>
+                                            <a href="blank.html">Blank Page</a>
+                                        </li>
+                                        <li>
+                                            <a href="login.html">Login Page</a>
+                                        </li>
+                                    </ul>
 
-                            </li>
+                                </li>*@
 
                         </ul>
                     </div>
@@ -315,7 +190,11 @@
 
     @Scripts.Render("~/Scripts/jquery")
 
+    <script src="~/Scripts/moment.min.js"></script>
+
     @Scripts.Render("~/Scripts/bootstrap")
+
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
 
     @Scripts.Render("~/Scripts/modernizr")
 
@@ -324,7 +203,7 @@
     @Scripts.Render("~/Scripts/datatables")
 
     @*<script src="//cdnjs.cloudflare.com/ajax/libs/timelinejs/2.36.0/js/timeline-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>*@
+        <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>*@
     @*<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>*@
 
     <script>

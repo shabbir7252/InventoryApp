@@ -1,29 +1,23 @@
-﻿using Inventory_App.Models;
-using System;
+﻿
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using Inventory_App.Models;
 
 namespace Inventory_App.Controllers
 {
+    [SessionTimeout]
     public class DefaultController : Controller
     {
         InventoryAppEntities db = new InventoryAppEntities();
 
-        // ------------------------------------------------------------------------- Dashboard -------------------------------------------------------------------------
+        // ----------------------------- Dashboard -----------------------------
         public ActionResult Index()
         {
-            if (Session["LoggedUserFullname"] == null)
-            {
-                Session.Abandon();
-                return RedirectToAction("Index", "Login");
-            }
+            List<AddInktoStore> allInkQuantity = db.AddInktoStores.ToList();
+            ViewBag.Total = allInkQuantity.Sum(x => x.Quantity);
             return View();
         }
-
 
         public ActionResult logout()
         {

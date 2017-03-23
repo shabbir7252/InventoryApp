@@ -28,7 +28,10 @@
             <th class="info">Year</th>
             <th class="info">Last Updated On</th>
             <th class="info">Quantity</th>
-            <th class="Hide-Sort">Action</th>
+            @if (Session["IsAdmin"].ToString() == "True")
+            {
+                <th class="Hide-Sort">Action</th>
+            }
         </tr>
     </thead>
 
@@ -51,7 +54,7 @@
                 <td>
 
                     @{
-                        string str = Html.DisplayFor(modelItem => item.Model.Color.Color_Name).ToString();
+                        string str = Html.DisplayFor(modelItem => item.Model.ColorName).ToString();
                         string firstLetters = "";
 
                         foreach (var part in str.Split(' '))
@@ -72,16 +75,22 @@
                     @Html.DisplayFor(modelItem => item.Year.Year1)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Date)
+                    @{
+                        string parameterValue = DateTime.Parse(item.Date.ToString()).ToLongDateString();
+
+                    }
+
+                    @Html.DisplayFor(model => parameterValue)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
-                <td>
-                    <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "EditBrand", new { id = item.InkId })</span>
-                    @*|
-                    <span class="action_button"><i class="fa fa-trash-o" aria-hidden="true"></i> @Html.ActionLink("Delete", "Delete", new { id = item.InkId })</span>*@
-                </td>
+                @if (Session["IsAdmin"].ToString() == "True")
+                {
+                    <td>
+                        <span class="action_button"><i class="fa fa-pencil" aria-hidden="true"></i> @Html.ActionLink("Edit", "editInk", new { id = item.InkId })</span>
+                    </td>
+                }
             </tr>
                         }
     <tbody>

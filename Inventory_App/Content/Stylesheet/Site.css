@@ -819,6 +819,10 @@ html > /**/ body table.dataTable thead .sorting_desc:after {
     color: #000;
 }
 
+.MultiColor{
+     background: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet); 
+}
+
 .alert-info {
     background-color: yellow !important;
     border: 5px solid black !important;

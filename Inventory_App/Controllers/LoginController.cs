@@ -13,8 +13,15 @@ namespace Inventory_App.Controllers
     {
 
         InventoryAppEntities db = new InventoryAppEntities();
+
+        [HttpGet]
         public ActionResult Index()
         {
+            if(Session["Sessiontimeout"] != null)
+            {
+                ViewBag.SessionExpire = Session["Sessiontimeout"].ToString();
+                Session.Abandon();
+            }
             return View();
         }
 
@@ -22,7 +29,6 @@ namespace Inventory_App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(User user, FormCollection formcollection)
         {
-
             string UserName = user.UserName;
             string Pass = formcollection["password"];
 
@@ -42,10 +48,12 @@ namespace Inventory_App.Controllers
                                 if (found != null)
                                 {
                                     int search = db.Users.Where(a => a.UserName == found.SamAccountName).Count();
-                                    
+
                                     if (search > 0)
                                     {
                                         Session["LoggedUserFullname"] = found.DisplayName;
+                                        Session["IsAdmin"] = db.Users.Single(a => a.UserName == found.SamAccountName).IsAdmin.ToString();
+                                        Session["IsSuperAdmin"] = db.Users.Single(a => a.UserName == found.SamAccountName).IsSuperAdmin.ToString();
                                         Session["UserID"] = db.Users.Single(a => a.UserName == found.SamAccountName).UserId;
                                         return RedirectToAction("Index", "Default");
                                     }
@@ -69,16 +77,16 @@ namespace Inventory_App.Controllers
             //using (InventoryAppEntities db = new InventoryAppEntities())
             //{
 
-            //    var v = db.Users.Where(a => a.UserName.Equals(user.UserName) && a.Password.Equals(user.Password) && a.IsDeleted == false).FirstOrDefault();
+            //    var v = db.Users.Where(a => a.UserName.Equals(user.UserName) && a.IsDeleted == false).FirstOrDefault();
 
             //    if (v != null)
             //    {
-            //        if (v.IsAdmin == true)
+            //        if (v.IsSuperAdmin == true)
             //        {
             //            Session["LoggedUserID"] = v.UserId.ToString();
-            //            Session["LoggedUserFullname"] = v.Name.ToString();
+            //            Session["LoggedUserFullname"] = v.UserName.ToString();
             //            //Session["IsAdmin"] = v.IsAdmin.ToString();
-            //            Session["SuperAdmin"] = v.IsAdmin.ToString();
+            //            Session["SuperAdmin"] = v.IsSuperAdmin.ToString();
             //            return RedirectToAction("Index", "Default");
             //        }
             //    }

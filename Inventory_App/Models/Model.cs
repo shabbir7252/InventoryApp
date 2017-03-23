@@ -23,13 +23,12 @@ namespace Inventory_App.Models
         public int Model_Id { get; set; }
         public string Model_Name { get; set; }
         public int Brand_Id { get; set; }
-        public int Color_Id { get; set; }
+        public string ColorName { get; set; }
         public System.DateTime Date { get; set; }
         public bool IsDeleted { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AddInktoStore> AddInktoStores { get; set; }
         public virtual Brand Brand { get; set; }
-        public virtual Color Color { get; set; }
     }
 }

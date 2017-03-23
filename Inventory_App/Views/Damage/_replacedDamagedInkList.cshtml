@@ -1,0 +1,91 @@
+﻿
+@model IEnumerable<Inventory_App.Models.Damage>
+
+    <style>
+        .action_button {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+            .action_button a {
+                text-decoration: none;
+            }
+
+        .fa-trash-o {
+            color: red;
+            font-size: 20px;
+        }
+
+        .table {
+            border-right: none;
+            border-bottom: none;
+        }
+    </style>
+
+
+    <table class="table table-bordered table-hover" id="myTable">
+        <thead>
+            <tr>
+                <th class="info">Store</th>
+                <th class="info">Model Name</th>
+                <th class="info">Replaced Date/Time</th>
+                <th class="info">Serial Number</th>
+                <th class="Hide-Sort">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AddInktoStore.Store.Store1)
+                    </td>
+
+                    <td>
+
+                        @{
+                            string str = Html.DisplayFor(modelItem => item.AddInktoStore.Model.ColorName).ToString();
+                            string firstLetters = "";
+
+                            foreach (var part in str.Split(' '))
+                            {
+                                firstLetters += part.Substring(0, 1);
+                            }
+                            str = str.Replace(" ", "");
+                        }
+                        <div id="colorBadge" class="badge @str">@firstLetters</div>
+                        &nbsp;
+                        <label>@Html.DisplayFor(modelItem => item.AddInktoStore.Model.Model_Name)</label>
+                        &nbsp;
+                        <div class="badge">@Html.DisplayFor(modelItem => item.AddInktoStore.Model.Brand.Brand_Name)</div>
+
+                    </td>
+
+                    <td>
+                        @{
+                            string parameterValue = DateTime.Parse(item.ReplacedDateTime.ToString()).ToLongDateString();
+
+                        }
+
+                        @Html.DisplayFor(model => parameterValue)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Serial)
+                    </td>
+
+                    <td style="padding:14px 0 0 8px; border-top:none; border-right:none; border-bottom:none; width:45px;">
+                        <span class="action_button">
+                            <a title="Delete Damaged Ink" href="@Url.Action("deleteRestoredDamagedInk","Damage",new { id = item.DamageId })">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </a>
+                        </span>
+                    </td>
+
+                </tr>
+                            }
+        </tbody>
+
+    </table>

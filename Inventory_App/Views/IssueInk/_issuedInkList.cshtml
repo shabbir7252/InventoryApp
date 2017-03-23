@@ -31,15 +31,12 @@
         border-right: none;
         border-bottom: none;
     }
-
-
 </style>
 
 
 <table class="table table-bordered table-hover" id="myTable">
     <thead>
         <tr>
-
             <th class="Hide-Sort">Del</th>
             <th class="info">Employee Name</th>
             <th class="info">Model Name</th>
@@ -70,7 +67,7 @@
                 {
                     string brandName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Brand.Brand_Name.ToString();
                     string modelName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Model_Name.ToString();
-                    string colorName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Color.Color_Name.ToString();
+                    string colorName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.ColorName.ToString();
                     <td>
                         <span class="badge">@brandName</span>
                         <label>@modelName</label>
@@ -84,8 +81,12 @@
                 </td>
 
                 <td>
+                    @{
+                        string parameterValue = DateTime.Parse(item.date.ToString()).ToLongDateString();
 
-                    @Html.DisplayFor(modelItem => item.date)
+                    }
+
+                    @Html.DisplayFor(model => parameterValue)
                 </td>
 
                 <td>

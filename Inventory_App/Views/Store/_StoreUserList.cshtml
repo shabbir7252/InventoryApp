@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Inventory_App.Models.StoreUser>
+
+<table class="table table-bordered table-hover" id="myTable">
+    <thead>
+        <tr>
+            <th class="info">Store Name</th>
+            <th class="info">User Name</th>
+            <th class="info">Is Permitted</th>
+        </tr>
+    <thead>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr class="@Html.ValueFor(modelItem => item.IsPermitted)">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Store.Store1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+                <td>
+                    @Html.ValueFor(modelItem => item.IsPermitted)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

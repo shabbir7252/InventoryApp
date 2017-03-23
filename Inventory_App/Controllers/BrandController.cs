@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Inventory_App.Models;
 
 namespace Inventory_App.Controllers
 {
+    [SessionTimeout]
     public class BrandController : Controller
     {
 
         InventoryAppEntities db = new InventoryAppEntities();
 
-        // ------------------------------------------------------------------------- Add Brand -------------------------------------------------------------------------
+        // ---------------- Partial View For Displaying Brand Items from the DB ----------------
 
         public ActionResult _BrandList()
         {
@@ -22,24 +22,21 @@ namespace Inventory_App.Controllers
             return PartialView("_BrandList", listview);
         }
 
+        // ---------------- Add Brand ----------------
+
+        #region Add Brand
+
         [HttpGet]
         public ActionResult AddBrand()
         {
-            if (Session["LoggedUserFullname"] == null)
-            {
-                Session.Abandon();
-                return RedirectToAction("Index", "Login");
-            }
-
             ViewBag.YearList = new SelectList(db.Years, "YearID", "Year1");
-
-            //List<Brand> brands = db.Brands.ToList();
             return View();
         }
 
         [HttpPost]
         public ActionResult AddBrand(Brand brand)
         {
+
             ViewBag.YearList = new SelectList(db.Years, "YearID", "Year1");
             if (brand != null)
             {
@@ -74,30 +71,13 @@ namespace Inventory_App.Controllers
                 return View();
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-            //if (ModelState.IsValid)
-            //{
-            //    brand.IsDeleted = false;
-            //    db.Brands.Add(brand);
-            //    db.SaveChanges();
-            //    ModelState.Clear();
-            //}
-            //ViewBag.YearList = new SelectList(db.Years, "YearID", "Year1");
-            //return View();
         }
 
-        // ------------------------------------------------------------------------- Edit Brand -------------------------------------------------------------------------
+        #endregion
+
+        // ---------------- Edit Brand ----------------
+
+        #region Edit Brand
 
         [HttpGet]
         public ActionResult EditBrand(int id)
@@ -128,31 +108,17 @@ namespace Inventory_App.Controllers
             return View(brand);
         }
 
+        #endregion
+
         // ---------------- Delete Brands ----------------
 
         #region Delete Brand
         public ActionResult Delete(int? id)
         {
-            try
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-
-                else
-                {
-                    var m = db.Brands.Where(e => e.Brand_Id == id).FirstOrDefault();
-                    m.IsDeleted = true;
-                    db.SaveChanges();
-                    return RedirectToAction("AddBrand");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-
-            }
+            var m = db.Brands.Where(e => e.Brand_Id == id).FirstOrDefault();
+            m.IsDeleted = true;
+            db.SaveChanges();
+            return RedirectToAction("AddBrand");
         }
 
         #endregion
@@ -205,39 +171,34 @@ namespace Inventory_App.Controllers
 
         public ActionResult wipeOutBrand(int? id)
         {
-            if (id == null)
+
+            int ModelCount = db.Models.Where(a => a.Brand_Id == id).Count();
+            if (ModelCount > 0)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.alertexistInkModel = MvcHtmlString.Create("Cannot Wipeout as the Brand is in use in Model Master. Delete the Related model which uses this brand");
+                TempData["wipeout"] = ViewBag.alertexistInkModel;
+                return RedirectToAction("restoreBrands");
             }
             else
             {
-                int ModelCount = db.Models.Where(a => a.Brand_Id == id).Count();
-                if (ModelCount > 0)
-                {
-                    ViewBag.alertexistInkModel = MvcHtmlString.Create("Cannot Wipeout as the Brand is in use in Model Master. Delete the Related model which uses this brand");
-                    TempData["wipeout"] = ViewBag.alertexistInkModel;
-                    return RedirectToAction("restoreBrands");
-                }
-                else
-                {
-                    TempData["Brandname"] = db.Brands.Single(a => a.Brand_Id == id).Brand_Name;
-                    Brand brand = db.Brands.Find(id);
-                    db.Brands.Remove(brand);
-                    db.SaveChanges();
-                }
-                var restoreBrand = db.Brands.Where(e => e.IsDeleted == true).Count();
-                if (restoreBrand > 0)
-                {
-                    TempData["restoreempty"] = "true";
-                    return RedirectToAction("restoreBrands");
-                }
-                else
-
-                {
-                    TempData["restoreempty"] = "true";
-                    return RedirectToAction("addBrand");
-                }
+                TempData["Brandname"] = db.Brands.Single(a => a.Brand_Id == id).Brand_Name;
+                Brand brand = db.Brands.Find(id);
+                db.Brands.Remove(brand);
+                db.SaveChanges();
             }
+            var restoreBrand = db.Brands.Where(e => e.IsDeleted == true).Count();
+            if (restoreBrand > 0)
+            {
+                TempData["restoreempty"] = "true";
+                return RedirectToAction("restoreBrands");
+            }
+            else
+
+            {
+                TempData["restoreempty"] = "true";
+                return RedirectToAction("addBrand");
+            }
+
         }
 
         #endregion

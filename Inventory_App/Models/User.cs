@@ -22,8 +22,9 @@ namespace Inventory_App.Models
     
         public int UserId { get; set; }
         public string UserName { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsSuperAdmin { get; set; }
+        public bool IsAdmin { get; set; }
+        public Nullable<bool> IsSuperAdmin { get; set; }
+        public System.DateTime date { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StoreUser> StoreUsers { get; set; }

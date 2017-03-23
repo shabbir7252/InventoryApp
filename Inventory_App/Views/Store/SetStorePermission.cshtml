@@ -1,0 +1,106 @@
+﻿
+@model Inventory_App.Models.StoreUser
+
+@{
+    ViewBag.Title = "SetStorePermission";
+}
+
+<style>
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
+    .False{
+        background-color:#ffe8ee !important;
+    }
+    .True {
+        background-color:#d9f9d6 !important;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Set Store Permission</h1>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+                @using (Html.BeginForm())
+                {
+                    <div class="col-lg-2 col-lg-offset-3">
+                        <label style="margin-top:5px">Search For Employee: </label>
+                    </div>
+                    <div class="col-lg-3">
+                        @Html.DropDownListFor(a => a.UserId, (SelectList)ViewBag.Usernames, new { @class = "form-control", @id = "ddlemployee" })
+                    </div>
+                    <div class="col-lg-2">
+                        <input class="btn btn-danger" type="submit" id="submitId" value="Get" />
+                    </div>
+                }
+            </div>
+
+            <div style="padding:5%;">
+                @{Html.RenderAction("_StoreUserList", "Store");}
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JavaScript {
+
+    <script>
+        $(document).ready(function () {
+
+            $('#myTable').DataTable({
+                fixedHeader: true,
+                dom: 'lfBtipr',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, 'colvis'
+                ]
+
+            });
+        });
+
+    </script>
+}

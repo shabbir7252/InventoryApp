@@ -1,0 +1,85 @@
+﻿@model Inventory_App.Models.AddInktoStore
+@using Inventory_App.Models;
+
+@{
+    ViewBag.Title = "editInk";
+}
+
+<style>
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+</style>
+
+
+<div id="page-wrapper">
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="row">
+
+                <div class="col-lg-6 text-left">
+                    <h1>Edit Ink in Store</h1>
+                </div>
+
+                <div class="col-lg-6 text-right">
+                    <h3>
+                        <a style="text-decoration: none;" href="@Url.Content("~/AddInk/AddInkPlus")"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to List</a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.HiddenFor(model => model.InkId)
+                    @Html.HiddenFor(model => model.YearID)
+                    @Html.HiddenFor(model => model.Model_Id)
+                    @Html.HiddenFor(model => model.Store_Id)
+                    @{
+                        InventoryAppEntities db = new InventoryAppEntities();
+                        var UrlID = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
+                        int maxNum = db.AddInktoStores.Single(a => a.InkId == UrlID).Quantity;
+                    }
+
+
+                    <div class="row">
+                        <div class="col-lg-3 control-label">Current Quantity :</div>
+                        <div class="col-lg-3"><label>@maxNum</label></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-3 control-label">Decrease Quantity to :</div>
+                            <div class="col-lg-1">
+                                @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control", @type = "number", @max = maxNum, @min = 1 })
+                            </div>
+                            <button class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+                        }
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Javascript{
+    <script>
+        $('#Quantity').keypress(function (event) {
+            event.preventDefault();
+        });
+    </script>
+}
+

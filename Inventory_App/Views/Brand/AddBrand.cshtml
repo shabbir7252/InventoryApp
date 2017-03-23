@@ -1,4 +1,5 @@
-﻿@model Inventory_App.Models.Brand
+﻿
+@model Inventory_App.Models.Brand
 @using Inventory_App.Models;
 
 @{
@@ -21,6 +22,28 @@
     table {
         margin-top: 5%;
     }
+
+        table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
 </style>
 
 
@@ -29,7 +52,6 @@
     @{
         if (ViewBag.BrandExist != null)
         {
-
             if (ViewBag.BrandExist == "BrandExist")
             {
                 <div class="alert alert-warning alert-dismissible animated bounceIn" role="alert">
@@ -125,7 +147,7 @@
         </div>
 
 
-        <div style="padding:0 12%;">
+        <div style="padding:0 5%;">
             @{Html.RenderAction("_BrandList", "Brand");}
         </div>
     </div>
@@ -136,6 +158,33 @@
 @section JavaScript {
 
     <script>
+
+        $('#myTable').DataTable({
+            
+            fixedHeader: true,
+            dom: 'lfBtipr',
+            buttons: [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, 'colvis'
+            ]
+
+        });
+
+
         //-----------------  To stop entering space in textbox before value ---------------//
 
         $(function () {

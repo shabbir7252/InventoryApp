@@ -27,7 +27,6 @@ namespace Inventory_App.Models
     
         public virtual DbSet<AddInktoStore> AddInktoStores { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
-        public virtual DbSet<Color> Colors { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<IssueInk> IssueInks { get; set; }
         public virtual DbSet<Model> Models { get; set; }
@@ -35,5 +34,6 @@ namespace Inventory_App.Models
         public virtual DbSet<StoreUser> StoreUsers { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Year> Years { get; set; }
+        public virtual DbSet<Damage> Damages { get; set; }
     }
 }

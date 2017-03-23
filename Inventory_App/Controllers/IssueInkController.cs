@@ -1,49 +1,43 @@
-﻿using Inventory_App.Models;
+﻿
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
 using System.Data.Entity;
-using System.Net;
 using System.IO;
+using Inventory_App.Models;
 
 namespace Inventory_App.Controllers
 {
-    public class IssueInkController : Controller
+    [SessionTimeout]
+    public class IssueInkController : BaseController
     {
-
-        InventoryAppEntities db = new InventoryAppEntities();
-
+        // for displaying the list of Issued Ink in Index view of this controller
         public ActionResult _issuedInkList()
         {
-            var listview = db.IssueInks.OrderByDescending(a => a.date).ToList();
+            var listview = db.IssueInks.OrderByDescending(a => a.date).ToList(); // Getting the list of Issued Ink
             return PartialView("_issuedInkList", listview);
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-
             ViewBag.YearList = new SelectList(db.Years, "YearID", "Year1");
 
-
+            //---------------- To set the focus after insertion of data ----------------
             if (TempData["focusKeyId"] != null)
             {
                 ViewBag.focusKeyId = TempData["focusKeyId"];
             }
-
             else
             {
                 ViewBag.focusKeyId = null;
             }
+            //---------------- To set the focus after insertion of data ----------------
 
-            if (TempData["NullExist"] != null)
+            if (TempData["exception"] != null)
             {
-                ViewData["NullExist"] = TempData["NullExist"];
+                ViewData["exception"] = TempData["exception"];
             }
 
             if (TempData["searchFileNamesList"] != null)
@@ -66,13 +60,7 @@ namespace Inventory_App.Controllers
                 ViewData["nameList"] = TempData["nameList"];
             }
 
-            List<AddInktoStore> AITS = db.AddInktoStores.Where(a => a.Quantity > 0).ToList();
-
-            List<Model> mdels = AITS.Select(s => s.Model).ToList();
-
-            List<string> modelNames = mdels.Select(m => m.Model_Name).ToList();
-
-            ViewData["InkList"] = new SelectList(modelNames);
+            getModelList();
 
             return View();
         }
@@ -82,62 +70,27 @@ namespace Inventory_App.Controllers
         {
             string employeeName = formCollection["nameList"]; // got the Value of the Employee textbox from the form and stored in variable of type string
             iInk.Employee = employeeName; //Stored Employee Name
-
-            string inkModelName = formCollection["InkList"]; // got the value of Model Name TextBox from the form and stored in variable of type string
-
-            //ViewBag.modelName = inkModelName; // Getting the Model Name in viewbag for display List in View 
-
-            int modelNumber = db.Models.Single(a => a.Model_Name == inkModelName).Model_Id; // got the model Id by Matching the Model Name from the Database value and inkModelName variable Above line
-
-            //ViewBag.modelColor = db.Models.Single(a => a.Model_Name == inkModelName).Color.Color_Name; // Getting the Color Name of This Model in viewbag for display List in View 
-            //ViewBag.modelBrand = db.Models.Single(a => a.Model_Name == inkModelName).Brand.Brand_Name; // Getting the Color Name of This Model in viewbag for display List in View 
-
-            int InkidNumber = db.AddInktoStores.Single(a => a.Model_Id == modelNumber).InkId; // got the InkId from the Ink Store by matching the Model ID we got from above Line
-            iInk.InkId = InkidNumber; //Stored InkID
-
-            //Stored Issue quantity Directly as from the iInk.Quantity
-            //and Now we update the Store quantity by subtracting its total quantity by Issued Quantity
-            updateQuantity(InkidNumber, iInk.Quantity); // Seprate Method Call to Update Quantity
-
-            iInk.date = DateTime.Now; //Stored current Date
-
-            //Stored Year Directly as from the iInk.YearId
+            int InkidNumber = int.Parse(formCollection["modelList"]);
+            iInk.InkId = InkidNumber;
+            updateQuantity(InkidNumber, false, iInk.Quantity);
+            iInk.date = DateTime.Now;
             db.IssueInks.Add(iInk); //Adding iInk Model to pass data in database
             db.SaveChanges(); // Saving Changes
-
             return View();
         }
 
-        private void updateQuantity(int InkId, int IssueQuantity)
-        {
-            AddInktoStore AddInktoStore = db.AddInktoStores.Find(InkId); // finding the row which matches the InkId which we found above
-            AddInktoStore.Quantity = AddInktoStore.Quantity - IssueQuantity; // Substracting the Quantity in store as we are issuing the Ink(Quantity)
-            db.Entry(AddInktoStore).State = EntityState.Modified; // Storing changes in Store Table
-            db.SaveChanges(); //Saving Changes
-        }
-
         [HttpPost]
-        public int GetQuantity(string text)
+        public int GetQuantity(int Id)
         {
-            if (text != "")
-            {
-                List<Model> mdl = db.Models.Where(a => a.Model_Name == text).ToList();
-                int modelID = int.Parse(mdl.Single().Model_Id.ToString());
-                AddInktoStore AITS = db.AddInktoStores.Single(a => a.Model_Id == modelID);
-                int maxvalue = int.Parse(AITS.Quantity.ToString());
-                return maxvalue;
-            }
-
-            return 0;
+            int maxvalue = db.AddInktoStores.Single(a => a.InkId == Id).Quantity;
+            return maxvalue;
         }
-
 
         public ActionResult SearchEmployee(string text)
         {
             List<string> SearchNamesList = new List<string>();
             var DisplayName = text;
-            SearchNamesList = SearchEngine(DisplayName);
-            //ViewBag.data = SearchNamesList;
+            SearchNamesList = SearchEngine(DisplayName, null);
             if (SearchNamesList.Count() > 0)
             {
                 TempData["nameList"] = new SelectList(SearchNamesList);
@@ -145,48 +98,23 @@ namespace Inventory_App.Controllers
             }
             else
             {
-                TempData["nameList"] = null;
+                //TempData["nameList"] = null;
                 return RedirectToAction("Index", "IssueInk");
             }
         }
 
-        public List<string> SearchEngine(string name)
+        // Attach function does not upload the file to the server. It is kust to open the modal window for for upload and viewing documents
+        public ActionResult Attach(int? id)
         {
-            List<string> SearchNamesList = new List<string>();
-
-            //SearchNamesList = db.Users.Select(a => a.UserName).ToList();
-
-            using (PrincipalContext ctx = new PrincipalContext(ContextType.Domain, "psc"))
-            {
-                UserPrincipal qbeUser = new UserPrincipal(ctx);
-                qbeUser.Name = name + "*";
-
-                using (PrincipalSearcher srch = new PrincipalSearcher(qbeUser))
-                {
-                    foreach (Principal found in srch.FindAll())
-                    {
-                        if (found.DisplayName != null)
-                        {
-                            SearchNamesList.Add(found.DisplayName);
-                        }
-                    }
-                }
-            }
-            return SearchNamesList;
-        }
-
-
-        public ActionResult LinkUpdate(FormCollection formCollection)
-        {
-            int InkId = int.Parse(formCollection["linkAttachmentID"]);
-            var imgName = formCollection["searchFileNamesList"];
-            IssueInk issueInk = db.IssueInks.Find(InkId);
-            issueInk.Attachment = imgName;
-            db.Entry(issueInk).State = EntityState.Modified;
-            db.SaveChanges(); //Saving Changes
+            TempData["InkIdforAttachment"] = id;
+            var path = Server.MapPath("~/Content/IssueImage/");
+            List<string> ListofIssueImages = GetFileList(path);
+            TempData["searchFileNamesList"] = new SelectList(ListofIssueImages);
+            TempData["focusKeyId"] = id;
             return RedirectToAction("Index", "IssueInk");
         }
 
+        // FileUpload function upload the file to the server in the folder Content>IssueImage
         [HttpPost]
         public ActionResult fileUpload(FormCollection formCollection)
         {
@@ -221,35 +149,21 @@ namespace Inventory_App.Controllers
             return RedirectToAction("Index", "IssueInk");
         }
 
-        public ActionResult Attach(int? id)
+        public ActionResult LinkUpdate(FormCollection formCollection)
         {
-            TempData["InkIdforAttachment"] = id;
-            var path = Server.MapPath("~/Content/IssueImage/");
-            List<string> ListofIssueImages = GetFileList(path);
-            TempData["searchFileNamesList"] = new SelectList(ListofIssueImages);
-            TempData["focusKeyId"] = id;
+            int InkId = int.Parse(formCollection["linkAttachmentID"]);
+            var imgName = formCollection["searchFileNamesList"];
+            IssueInk issueInk = db.IssueInks.Find(InkId);
+            issueInk.Attachment = imgName;
+            db.Entry(issueInk).State = EntityState.Modified;
+            db.SaveChanges(); //Saving Changes
             return RedirectToAction("Index", "IssueInk");
-        }
-
-        public List<string> GetFileList(string pathName)
-        {
-            List<string> searchFileNamesList = new List<string>();
-            if (Directory.Exists(pathName))
-            {
-                string[] fileEntries = Directory.GetFiles(pathName);
-                foreach (string fileName in fileEntries)
-                {
-                    string fileNamefromPath = Path.GetFileName(fileName);
-                    searchFileNamesList.Add(fileNamefromPath);
-                }
-            }
-
-            return searchFileNamesList;
         }
 
 
         public ActionResult deleteFile(int id)
         {
+
             string dbfileName = db.IssueInks.Single(a => a.IssueInkId == id).Attachment;
             int fileCount = db.IssueInks.Where(a => a.Attachment == dbfileName).Count();
 
@@ -285,24 +199,27 @@ namespace Inventory_App.Controllers
             return RedirectToAction("Index", "IssueInk");
         }
 
+
+        #region Delete_Issue_Ink
+
+        // To delete the issued ink and adding back ink(Quantity) to the store
         public ActionResult DeleteIssueInk(int? id)
         {
-
-            if (id == null)
+            try
             {
-                TempData["NullExist"] = "NullExist";
-                return RedirectToAction("Index", "IssueInk");
-            }
-
-            else
-            {
-                string dbfileName = db.IssueInks.Single(a => a.IssueInkId == id).Attachment;
-                if (dbfileName != null)
+                if (id == null)
                 {
-                    int fileCount = db.IssueInks.Where(a => a.Attachment == dbfileName).Count();
-                    if (fileCount >= 2)
+                    throw new ArgumentNullException();
+                }
+
+                string dbAttachmentPath = db.IssueInks.Single(a => a.IssueInkId == id).Attachment;
+
+                if (dbAttachmentPath != null) // if the attachment path is null then delete the issue ink directly
+                {
+                    int fileCount = db.IssueInks.Where(a => a.Attachment == dbAttachmentPath).Count();
+                    if (fileCount >= 2) // if files are more than 1 then only delete the issued Ink. We are not deleting the Attachment as there are more reference to the same file
                     {
-                        DeleteInkfromStoreProcedure(id);
+                        DropIssueInk(id); // function call to delete the issue ink without deleting attachment
                     }
 
                     else
@@ -313,11 +230,11 @@ namespace Inventory_App.Controllers
                             string[] fileEntries = Directory.GetFiles(path);
                             foreach (string fileName in fileEntries)
                             {
-                                string fileNamefromPath = Path.GetFileName(fileName);
-                                if (fileNamefromPath == dbfileName)
+                                string fileNamePath = Path.GetFileName(fileName);
+                                if (fileNamePath == dbAttachmentPath)
                                 {
-                                    DeleteInkfromStoreProcedure(id);
-                                    System.IO.File.Delete(fileName);
+                                    DropIssueInk(id); //function call to delete the issue ink after deleting attachment
+                                    System.IO.File.Delete(fileName); // Delete the file from folder
                                 }
                             }
                         }
@@ -327,27 +244,33 @@ namespace Inventory_App.Controllers
 
                 else
                 {
-                    DeleteInkfromStoreProcedure(id);
+                    DropIssueInk(id);
                 }
             }
 
+            catch (ArgumentNullException e) // catching the null ID exception 
+            {
+                TempData["exception"] = e.Message + e.StackTrace; //TempData to pass the data from one function to another within controller--- passing to index function
+            }
+
+            catch (Exception e)
+            {
+                TempData["exception"] = e.Message;
+            }
+
             return RedirectToAction("Index", "IssueInk");
+
         }
 
-        public void DeleteInkfromStoreProcedure(int? Id)
+        public void DropIssueInk(int? Id)
         {
             IssueInk issueInk = db.IssueInks.Find(Id);
-            int InkId = issueInk.InkId;
-            int issueQuantity = issueInk.Quantity;
-
-            AddInktoStore AddInktoStore = db.AddInktoStores.Find(InkId); // finding the row which matches the InkId which we found above
-            AddInktoStore.Quantity = AddInktoStore.Quantity + issueQuantity; // Substracting the Quantity in store as we are issuing the Ink(Quantity)
-            db.Entry(AddInktoStore).State = EntityState.Modified; // Storing changes in Store Table
-            db.SaveChanges(); //Saving Changes
-
+            updateQuantity(issueInk.InkId, true, issueInk.Quantity); // adding the ink back to store - as we are passing true in operations
             db.IssueInks.Remove(issueInk);
             db.SaveChanges();
-        }
+        } 
+
+        #endregion
 
     }
 }

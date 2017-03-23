@@ -1,0 +1,84 @@
+﻿@model Inventory_App.Models.Damage
+
+@{
+    ViewBag.Title = "disposedDamagedInk";
+}
+
+<style>
+      .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Disposed Damaged Ink</h1>
+        </div>
+        <div class="panel-body">
+            <div style="padding:0 5%;">
+                @{Html.RenderAction("_DisposeDamagedInkList", "Damage");}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section JavaScript {
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            $('#myTable').DataTable({
+                fixedHeader: true,
+                dom: 'lfBtipr',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, 'colvis'
+                ]
+
+            });
+        });
+    </script>
+}

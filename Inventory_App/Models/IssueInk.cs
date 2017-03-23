@@ -9,11 +9,9 @@
 
 namespace Inventory_App.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-
-    [JsonObject(IsReference = true)]
+    
     public partial class IssueInk
     {
         public int IssueInkId { get; set; }

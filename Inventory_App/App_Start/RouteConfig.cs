@@ -19,5 +19,6 @@ namespace Inventory_App
                 defaults: new { controller = "Default", action = "Index", id = UrlParameter.Optional }
             );
         }
+        
     }
 }

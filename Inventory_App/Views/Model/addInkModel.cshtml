@@ -11,7 +11,7 @@
         cursor: not-allowed;
     }
 
-    #Store_Id, #Brand_Id, #Color_Id {
+    #Store_Id, #Brand_Id, #ColorList {
         padding: 5%;
     }
 
@@ -33,6 +33,28 @@
 
     table {
         margin-top: 5%;
+    }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
     }
 </style>
 
@@ -91,7 +113,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    @Html.DropDownListFor(m => m.Color_Id, (SelectList)ViewBag.ColorList, "-- Select Color --", null)
+                                    @Html.DropDownList("ColorList", null, "-- Select Color --", null)
                                 </div>
                             </div>
                         </div>
@@ -104,7 +126,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    @Html.EditorFor(model => model.Model_Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Add Model name" } })
+                                    @Html.EditorFor(model => model.Model_Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Add Model name", @onkeypress = "return RestrictSpace()" } })
                                 </div>
                             </div>
                         </div>
@@ -133,7 +155,7 @@
         </div>
 
 
-        <div style="padding:0 15%;">
+        <div style="padding:0 5%;">
             @{Html.RenderAction("_InkModelList", "Model");}
         </div>
     </div>
@@ -142,6 +164,32 @@
 
 
 @section JavaScript {
+
+    <script>
+        $('#myTable').DataTable({
+            fixedHeader: true,
+            dom: 'lfBtipr',
+            buttons: [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, 'colvis'
+            ]
+
+        });
+    </script>
 
     <script type="text/javascript">
         $(window).load(function () {
@@ -153,90 +201,97 @@
 
     <script type="text/javascript">
 
-        //-----------------  To stop entering space in textbox before value ---------------//
-
-        $(function () {
-            $('body').on('keydown', 'input', function (e) {
-                console.log(this.value);
-                if (e.which === 32 && this.value === '') {
+        $(document).ready(function () {
+            function RestrictSpace() {
+                if (event.keyCode == 32) {
                     return false;
                 }
-            });
-        });
-
-        //------------------------------------------------------------------------------//
-
-        //---------------  To stop value in textbox exceeding the length --------------//
-
-        jQuery(document).ready(function ($) {
-            var max = 25;
-            $('#Model_Name').keypress(function (e) {
-                if (e.which < 0x20) {
-                    // e.which < 0x20, then it's not a printable character
-                    // e.which === 0 - Not a character
-                    return;     // Do nothing
-                }
-                if (this.value.length == max) {
-                    e.preventDefault();
-                } else if (this.value.length > max) {
-                    // Maximum exceeded
-                    this.value = this.value.substring(0, max);
-                }
-            });
-        }); //end if ready(fn)
-
-
-        //------------------------------------------------------------------------------//
-
-        //------  To enable the Add Color Button only when text box is not empty ------//
-
-        document.getElementById('alert').disabled = true;
-
-        document.getElementById("Model_Name").onkeyup = function () {
-            if (this.value.length > 0) {
-                document.getElementById('alert').disabled = false;
-            } else {
-                document.getElementById('alert').disabled = true;
             }
-        }
 
-        //------------------------------------------------------------------------------//
+            //-----------------  To stop entering space in textbox before value ---------------//
 
-        //----------------  To enable/Disable if selection is not made ----------------//
+            $(function () {
+                $('body').on('keydown', 'input', function (e) {
+                    console.log(this.value);
+                    if (e.which === 32 && this.value === '') {
+                        return false;
+                    }
+                });
+            });
 
-        document.getElementById('Color_Id').disabled = true;
-        document.getElementById('Model_Name').disabled = true;
-        var dropDown = document.getElementById("Color_Id");
-        var ModelName = document.getElementById("Model_Name");
+            //------------------------------------------------------------------------------//
 
-        $(function () {
-            $('#Brand_Id').change(function () {
-                var value = $(this).val();
-                if (value > '0' || value != "" || value > '-1') {
-                    dropDown.disabled = false;
+            //---------------  To stop value in textbox exceeding the length --------------//
+
+            jQuery(document).ready(function ($) {
+                var max = 25;
+                $('#Model_Name').keypress(function (e) {
+                    if (e.which < 0x20) {
+                        // e.which < 0x20, then it's not a printable character
+                        // e.which === 0 - Not a character
+                        return;     // Do nothing
+                    }
+                    if (this.value.length == max) {
+                        e.preventDefault();
+                    } else if (this.value.length > max) {
+                        // Maximum exceeded
+                        this.value = this.value.substring(0, max);
+                    }
+                });
+            }); //end if ready(fn)
+
+
+            //------------------------------------------------------------------------------//
+
+            //------  To enable the Add Color Button only when text box is not empty ------//
+
+            document.getElementById('alert').disabled = true;
+
+            document.getElementById("Model_Name").onkeyup = function () {
+                if (this.value.length > 0) {
+                    document.getElementById('alert').disabled = false;
                 } else {
-                    dropDown.disabled = true;
-                    ModelName.disabled = true;
-                    dropDown.selectedIndex = 0;
                     document.getElementById('alert').disabled = true;
-                    $("#Model_Name").val('');
                 }
-            });
-        });
+            }
 
-        $(function () {
-            $('#Color_Id').change(function () {
-                var value = $(this).val();
-                if (value > '0' || value != "" || value > '-1') {
-                    ModelName.disabled = false;
-                } else {
-                    ModelName.disabled = true;
-                    $("#Model_Name").val('');
-                }
-            });
-        });
+            //------------------------------------------------------------------------------//
 
-        //------------------------------------------------------------------------------//
+            //----------------  To enable/Disable if selection is not made ----------------//
+
+            document.getElementById('Color_Id').disabled = true;
+            document.getElementById('Model_Name').disabled = true;
+            var dropDown = document.getElementById("Color_Id");
+            var ModelName = document.getElementById("Model_Name");
+
+            $(function () {
+                $('#Brand_Id').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        dropDown.disabled = false;
+                    } else {
+                        dropDown.disabled = true;
+                        ModelName.disabled = true;
+                        dropDown.selectedIndex = 0;
+                        document.getElementById('alert').disabled = true;
+                        $("#Model_Name").val('');
+                    }
+                });
+            });
+
+            $(function () {
+                $('#Color_Id').change(function () {
+                    var value = $(this).val();
+                    if (value > '0' || value != "" || value > '-1') {
+                        ModelName.disabled = false;
+                    } else {
+                        ModelName.disabled = true;
+                        $("#Model_Name").val('');
+                    }
+                });
+            });
+
+            //------------------------------------------------------------------------------//
 
     </script>
 

@@ -109,6 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -134,6 +135,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\datatables.min.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
@@ -153,12 +155,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="App_Data\colors.json" />
+    <None Include="Properties\PublishProfiles\Inventory.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -171,13 +176,15 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AddInkController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandController.cs" />
-    <Compile Include="Controllers\ColorController.cs" />
+    <Compile Include="Controllers\DamageController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\IssueInkController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -187,13 +194,21 @@
     <Compile Include="Models\Brand.cs">
       <DependentUpon>InventoryAppModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Color.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Country.cs">
       <DependentUpon>InventoryAppModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Enum.cs" />
+    <Compile Include="Models\customStoreUser.cs" />
+    <Compile Include="Models\Damage.cs">
+      <DependentUpon>InventoryAppModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IssueInk.cs">
+      <DependentUpon>InventoryAppModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Model.cs">
+      <DependentUpon>InventoryAppModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SessionTimeoutAttribute.cs" />
+    <Compile Include="Models\colorList.cs" />
     <Compile Include="Models\InventoryAppModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -208,12 +223,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InventoryAppModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IssueInk.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Store.cs">
       <DependentUpon>InventoryAppModel.tt</DependentUpon>
@@ -250,11 +259,7 @@
     <Content Include="Views\Store\_StoreList.cshtml" />
     <Content Include="Views\Store\AddStore.cshtml" />
     <Content Include="Views\Model\addInkModel.cshtml" />
-    <Content Include="Views\Color\addColor.cshtml" />
-    <Content Include="Views\Color\_colorList.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\Color\Editcolor.cshtml" />
-    <Content Include="Views\Color\restoreColor.cshtml" />
     <Content Include="Views\Model\_InkModelList.cshtml" />
     <Content Include="Views\Model\EditInkModel.cshtml" />
     <Content Include="Views\Model\restoreInkModel.cshtml" />
@@ -263,6 +268,18 @@
     <Content Include="Views\AddInk\_AddInkToStoreList.cshtml" />
     <Content Include="Views\IssueInk\Index.cshtml" />
     <Content Include="Views\IssueInk\_issuedInkList.cshtml" />
+    <Content Include="Views\AddInk\editInk.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\_UserList.cshtml" />
+    <Content Include="Views\Store\SetStorePermission.cshtml" />
+    <Content Include="Views\Store\SelectPermission.cshtml" />
+    <Content Include="Views\Store\_StoreUserList.cshtml" />
+    <Content Include="Views\Damage\Index.cshtml" />
+    <Content Include="Views\Damage\_damageInkList.cshtml" />
+    <Content Include="Views\Damage\replacedDamagedInk.cshtml" />
+    <Content Include="Views\Damage\_replacedDamagedInkList.cshtml" />
+    <Content Include="Views\Damage\_DisposeDamagedInkList.cshtml" />
+    <Content Include="Views\Damage\disposedDamagedInk.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -271,8 +288,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="Content\damageInkImage\" />
     <Folder Include="Content\IssueImage\" />
+    <Folder Include="Views\BaseController\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

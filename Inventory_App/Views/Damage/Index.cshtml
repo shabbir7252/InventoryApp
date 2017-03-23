@@ -1,0 +1,222 @@
+﻿@model Inventory_App.Models.Damage
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .btn-info {
+        margin-top: 25px;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
+</style>
+
+<div id="page-wrapper">
+
+    @if (ViewBag.id != null)
+    {
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="IssueAttachmentModal">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3 class="text-center">Attach Replace Ink Receipt</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                @{
+                                    int id = 0;
+                                    id = ViewBag.id;
+                                    using (Html.BeginForm("fileUpload", "Damage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <input type="file" id="file" name="file">
+                                            </div>
+                                        </div>
+                                        <input id="AttachmentID" type="text" hidden value="@id" name="AttachmentID" />
+                                        <div class="col-lg-3">
+                                            <button id="attachmentSave" class="btn btn-primary">save</button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <hr />
+                        <h3 class="text-center">Or Link From the Scanned Image Below</h3>
+                        <div class="row">
+
+                            <br />
+                            @{
+                                using (Html.BeginForm("LinkUpdate", "Damage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    id = ViewBag.id;
+                                    <div class="col-lg-4 col-lg-offset-1 ">
+                                        @Html.DropDownList("searchFileNamesList", null, "Select Filename...", new { @class = "form-control" })
+                                    </div>
+                                    <input id="linkAttachmentID" type="text" hidden value="@id" name="linkAttachmentID" />
+                                    <div class="col-lg-6">
+                                        <input type="submit" id="btnlinkSubmit" class="btn btn-primary" value="Submit" />
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    </div><div class="modal-footer">
+                        <div class="row">
+                            <img id="blah" src="~/Content/Images/NA_icon.jpg" alt="your image" style="width:100%" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                }
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Add Damaged Ink</h1>
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <div class="row">
+
+                            <div class="col-lg-2 col-lg-offset-2">
+                                <label class="control-label">Model</label>
+                                @Html.DropDownList("ModelList", null, "Select Model...", new { @class = "form-control", @id = "modelchange" })
+                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label label-info" id="storeName"></span></label>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <label class="control-label">Date/Time of Damage</label>
+                                <div class='input-group date' id='datetimepicker1'>
+                                    <input type='text' class="form-control" name="datetimepicker" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <label class="control-label">Serial Number</label>
+                                @Html.EditorFor(model => model.Serial, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+
+                            <div class="col-lg-2">
+                                <input type="submit" value="Save" class="btn btn-info" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div style="padding:0 5%;">
+                @{Html.RenderAction("_damageInkList", "Damage");}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section JavaScript {
+    <script type="text/javascript">
+        var focusKeyId = "@ViewBag.focusKeyId";
+
+        $(document).ready(function () {
+            $("#modelchange").change(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetStore")', // we are calling json method
+                    dataType: 'json',
+                    data: { Id: $("#modelchange").val() },
+                    success: function (storeName) {
+                        $('#storeName').text("Store : " + storeName);
+                    },
+                    error: function (ex) {
+                        alert('Failed to load store Value. Please Contact Your System Administrator' + ex);
+                    }
+
+
+                });
+                return false;
+            })
+
+            if (focusKeyId != null || focusKeyId != "") {
+                id = focusKeyId;
+                $("#" + id).focus();
+            }
+
+            $('#myTable').DataTable({
+                "aaSorting": [3, 'desc'],
+                fixedHeader: true,
+                dom: 'lfBtipr',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }, 'colvis'
+                ]
+
+            });
+
+            
+            $("#searchFileNamesList").change(function () {
+                if ($("#searchFileNamesList").val() != null) {
+                    if ($("#searchFileNamesList").val() == "") {
+                        document.getElementById('btnlinkSubmit').disabled = true;
+                        $('#blah').attr('src', "/Content/Images/NA_icon.jpg");
+                    }
+                    else {
+                        var input = "/Content/damageInkImage/" + $("#searchFileNamesList").val();
+                        $('#blah').attr('src', input);
+                    }
+                }
+            });
+        });
+    </script>
+}

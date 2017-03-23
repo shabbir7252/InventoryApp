@@ -26,21 +26,26 @@
           <Property Name="YearID" Type="int" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" />
         </EntityType>
-        <EntityType Name="Color">
-          <Key>
-            <PropertyRef Name="Color_Id" />
-          </Key>
-          <Property Name="Color_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Color_Name" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="Date" Type="datetime" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" Nullable="false" />
-        </EntityType>
         <EntityType Name="Countries">
           <Key>
             <PropertyRef Name="CountryID" />
           </Key>
           <Property Name="CountryID" Type="int" Nullable="false" />
           <Property Name="CountryName" Type="varchar" MaxLength="80" />
+        </EntityType>
+        <EntityType Name="Damage">
+          <Key>
+            <PropertyRef Name="DamageId" />
+          </Key>
+          <Property Name="DamageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InkId" Type="int" Nullable="false" />
+          <Property Name="Datetime" Type="datetime" Nullable="false" />
+          <Property Name="Serial" Type="varchar" MaxLength="50" />
+          <Property Name="IsDisposed" Type="bit" Nullable="false" />
+          <Property Name="DisposedDateTime" Type="datetime" />
+          <Property Name="IsReplaced" Type="bit" Nullable="false" />
+          <Property Name="ReplacedDateTime" Type="datetime" />
+          <Property Name="Attachment" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="IssueInk">
           <Key>
@@ -61,7 +66,7 @@
           <Property Name="Model_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Model_Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Brand_Id" Type="int" Nullable="false" />
-          <Property Name="Color_Id" Type="int" Nullable="false" />
+          <Property Name="ColorName" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
@@ -82,7 +87,7 @@
           <Property Name="StoreUserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Store_Id" Type="int" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="IsPermitted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -90,8 +95,9 @@
           </Key>
           <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" Nullable="false" />
-          <Property Name="IsSuperAdmin" Type="bit" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="IsSuperAdmin" Type="bit" />
+          <Property Name="date" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Years">
           <Key>
@@ -148,6 +154,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Damage_AddInktoStore">
+          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="1" />
+          <End Role="Damage" Type="Self.Damage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddInktoStore">
+              <PropertyRef Name="InkId" />
+            </Principal>
+            <Dependent Role="Damage">
+              <PropertyRef Name="InkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_IssueInk_AddInktoStore">
           <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="1" />
           <End Role="IssueInk" Type="Self.IssueInk" Multiplicity="*" />
@@ -181,18 +199,6 @@
             </Principal>
             <Dependent Role="Model">
               <PropertyRef Name="Brand_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Model_Color">
-          <End Role="Color" Type="Self.Color" Multiplicity="1" />
-          <End Role="Model" Type="Self.Model" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Color">
-              <PropertyRef Name="Color_Id" />
-            </Principal>
-            <Dependent Role="Model">
-              <PropertyRef Name="Color_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -247,8 +253,8 @@
         <EntityContainer Name="InventoryAppModelStoreContainer">
           <EntitySet Name="AddInktoStore" EntityType="Self.AddInktoStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Color" EntityType="Self.Color" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Damage" EntityType="Self.Damage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IssueInk" EntityType="Self.IssueInk" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Model" EntityType="Self.Model" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
@@ -271,6 +277,10 @@
             <End Role="Years" EntitySet="Years" />
             <End Role="Brand" EntitySet="Brand" />
           </AssociationSet>
+          <AssociationSet Name="FK_Damage_AddInktoStore" Association="Self.FK_Damage_AddInktoStore">
+            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="Damage" EntitySet="Damage" />
+          </AssociationSet>
           <AssociationSet Name="FK_IssueInk_AddInktoStore" Association="Self.FK_IssueInk_AddInktoStore">
             <End Role="AddInktoStore" EntitySet="AddInktoStore" />
             <End Role="IssueInk" EntitySet="IssueInk" />
@@ -281,10 +291,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_Model_Brand" Association="Self.FK_Model_Brand">
             <End Role="Brand" EntitySet="Brand" />
-            <End Role="Model" EntitySet="Model" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Model_Color" Association="Self.FK_Model_Color">
-            <End Role="Color" EntitySet="Color" />
             <End Role="Model" EntitySet="Model" />
           </AssociationSet>
           <AssociationSet Name="FK_Store_Countries" Association="Self.FK_Store_Countries">
@@ -311,7 +317,6 @@
         <EntityContainer Name="InventoryAppEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AddInktoStores" EntityType="InventoryAppModel.AddInktoStore" />
           <EntitySet Name="Brands" EntityType="InventoryAppModel.Brand" />
-          <EntitySet Name="Colors" EntityType="InventoryAppModel.Color" />
           <EntitySet Name="Countries" EntityType="InventoryAppModel.Country" />
           <EntitySet Name="IssueInks" EntityType="InventoryAppModel.IssueInk" />
           <EntitySet Name="Models" EntityType="InventoryAppModel.Model" />
@@ -343,10 +348,6 @@
             <End Role="Brand" EntitySet="Brands" />
             <End Role="Model" EntitySet="Models" />
           </AssociationSet>
-          <AssociationSet Name="FK_Model_Color" Association="InventoryAppModel.FK_Model_Color">
-            <End Role="Color" EntitySet="Colors" />
-            <End Role="Model" EntitySet="Models" />
-          </AssociationSet>
           <AssociationSet Name="FK_Store_Countries" Association="InventoryAppModel.FK_Store_Countries">
             <End Role="Country" EntitySet="Countries" />
             <End Role="Store" EntitySet="Stores" />
@@ -367,6 +368,11 @@
             <End Role="User" EntitySet="Users" />
             <End Role="StoreUser" EntitySet="StoreUsers" />
           </AssociationSet>
+          <EntitySet Name="Damages" EntityType="InventoryAppModel.Damage" />
+          <AssociationSet Name="FK_Damage_AddInktoStore" Association="InventoryAppModel.FK_Damage_AddInktoStore">
+            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
+            <End Role="Damage" EntitySet="Damages" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AddInktoStore">
           <Key>
@@ -383,6 +389,7 @@
           <NavigationProperty Name="Store" Relationship="InventoryAppModel.FK_AddInk_Store" FromRole="AddInktoStore" ToRole="Store" />
           <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_AddInk_Years" FromRole="AddInktoStore" ToRole="Year" />
           <NavigationProperty Name="IssueInks" Relationship="InventoryAppModel.FK_IssueInk_AddInktoStore" FromRole="AddInktoStore" ToRole="IssueInk" />
+          <NavigationProperty Name="Damages" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="AddInktoStore" ToRole="Damage" />
         </EntityType>
         <EntityType Name="Brand">
           <Key>
@@ -394,16 +401,6 @@
           <Property Name="IsDeleted" Type="Boolean" />
           <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_Brand_Years" FromRole="Brand" ToRole="Year" />
           <NavigationProperty Name="Models" Relationship="InventoryAppModel.FK_Model_Brand" FromRole="Brand" ToRole="Model" />
-        </EntityType>
-        <EntityType Name="Color">
-          <Key>
-            <PropertyRef Name="Color_Id" />
-          </Key>
-          <Property Name="Color_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Color_Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Models" Relationship="InventoryAppModel.FK_Model_Color" FromRole="Color" ToRole="Model" />
         </EntityType>
         <EntityType Name="Country">
           <Key>
@@ -434,12 +431,11 @@
           <Property Name="Model_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Model_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Brand_Id" Type="Int32" Nullable="false" />
-          <Property Name="Color_Id" Type="Int32" Nullable="false" />
+          <Property Name="ColorName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AddInktoStores" Relationship="InventoryAppModel.FK_AddInk_Model" FromRole="Model" ToRole="AddInktoStore" />
           <NavigationProperty Name="Brand" Relationship="InventoryAppModel.FK_Model_Brand" FromRole="Model" ToRole="Brand" />
-          <NavigationProperty Name="Color" Relationship="InventoryAppModel.FK_Model_Color" FromRole="Model" ToRole="Color" />
         </EntityType>
         <EntityType Name="Store">
           <Key>
@@ -462,7 +458,7 @@
           <Property Name="StoreUserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Store_Id" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="IsPermitted" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Store" Relationship="InventoryAppModel.FK_StoreUsers_Store" FromRole="StoreUser" ToRole="Store" />
           <NavigationProperty Name="User" Relationship="InventoryAppModel.FK_StoreUsers_User" FromRole="StoreUser" ToRole="User" />
         </EntityType>
@@ -472,8 +468,9 @@
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="IsSuperAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="IsSuperAdmin" Type="Boolean" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="StoreUsers" Relationship="InventoryAppModel.FK_StoreUsers_User" FromRole="User" ToRole="StoreUser" />
         </EntityType>
         <EntityType Name="Year">
@@ -559,18 +556,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Model_Color">
-          <End Type="InventoryAppModel.Color" Role="Color" Multiplicity="1" />
-          <End Type="InventoryAppModel.Model" Role="Model" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Color">
-              <PropertyRef Name="Color_Id" />
-            </Principal>
-            <Dependent Role="Model">
-              <PropertyRef Name="Color_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Store_Countries">
           <End Type="InventoryAppModel.Country" Role="Country" Multiplicity="1" />
           <End Type="InventoryAppModel.Store" Role="Store" Multiplicity="*" />
@@ -631,6 +616,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Damage">
+          <Key>
+            <PropertyRef Name="DamageId" />
+          </Key>
+          <Property Name="DamageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InkId" Type="Int32" Nullable="false" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Serial" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDisposed" Type="Boolean" Nullable="false" />
+          <Property Name="DisposedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsReplaced" Type="Boolean" Nullable="false" />
+          <Property Name="ReplacedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Attachment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AddInktoStore" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="Damage" ToRole="AddInktoStore" />
+        </EntityType>
+        <Association Name="FK_Damage_AddInktoStore">
+          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="1" />
+          <End Type="InventoryAppModel.Damage" Role="Damage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AddInktoStore">
+              <PropertyRef Name="InkId" />
+            </Principal>
+            <Dependent Role="Damage">
+              <PropertyRef Name="InkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -660,16 +672,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Colors">
-            <EntityTypeMapping TypeName="InventoryAppModel.Color">
-              <MappingFragment StoreEntitySet="Color">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Color_Name" ColumnName="Color_Name" />
-                <ScalarProperty Name="Color_Id" ColumnName="Color_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Countries">
             <EntityTypeMapping TypeName="InventoryAppModel.Country">
               <MappingFragment StoreEntitySet="Countries">
@@ -696,7 +698,7 @@
               <MappingFragment StoreEntitySet="Model">
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Color_Id" ColumnName="Color_Id" />
+                <ScalarProperty Name="ColorName" ColumnName="ColorName" />
                 <ScalarProperty Name="Brand_Id" ColumnName="Brand_Id" />
                 <ScalarProperty Name="Model_Name" ColumnName="Model_Name" />
                 <ScalarProperty Name="Model_Id" ColumnName="Model_Id" />
@@ -717,7 +719,7 @@
           <EntitySetMapping Name="StoreUsers">
             <EntityTypeMapping TypeName="InventoryAppModel.StoreUser">
               <MappingFragment StoreEntitySet="StoreUsers">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsPermitted" ColumnName="IsPermitted" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
                 <ScalarProperty Name="StoreUserID" ColumnName="StoreUserID" />
@@ -727,8 +729,9 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="InventoryAppModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="date" ColumnName="date" />
                 <ScalarProperty Name="IsSuperAdmin" ColumnName="IsSuperAdmin" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
@@ -739,6 +742,21 @@
               <MappingFragment StoreEntitySet="Years">
                 <ScalarProperty Name="Year1" ColumnName="Year" />
                 <ScalarProperty Name="YearID" ColumnName="YearID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Damages">
+            <EntityTypeMapping TypeName="InventoryAppModel.Damage">
+              <MappingFragment StoreEntitySet="Damage">
+                <ScalarProperty Name="Attachment" ColumnName="Attachment" />
+                <ScalarProperty Name="ReplacedDateTime" ColumnName="ReplacedDateTime" />
+                <ScalarProperty Name="IsReplaced" ColumnName="IsReplaced" />
+                <ScalarProperty Name="DisposedDateTime" ColumnName="DisposedDateTime" />
+                <ScalarProperty Name="IsDisposed" ColumnName="IsDisposed" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="InkId" ColumnName="InkId" />
+                <ScalarProperty Name="DamageId" ColumnName="DamageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

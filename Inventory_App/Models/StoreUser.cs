@@ -17,7 +17,7 @@ namespace Inventory_App.Models
         public int StoreUserID { get; set; }
         public int Store_Id { get; set; }
         public int UserId { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsPermitted { get; set; }
     
         public virtual Store Store { get; set; }
         public virtual User User { get; set; }

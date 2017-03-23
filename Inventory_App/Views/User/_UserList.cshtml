@@ -1,0 +1,77 @@
+﻿@using Inventory_App.Models;
+@model IEnumerable<Inventory_App.Models.User>
+
+<style>
+    .action_button {
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+        .action_button a {
+            text-decoration: none;
+        }
+
+    .fa-trash-o {
+        color: red;
+        font-size: 20px;
+    }
+
+    .table {
+        border-right: none;
+        border-bottom: none;
+    }
+</style>
+
+
+<table class="table table-bordered table-hover" id="myTable">
+    <thead>
+        <tr>
+            <th class="info">Employee Username</th>
+            <th class="info">Is Admin</th>
+            <th class="info">Is SuperAdmin</th>
+            <th class="info">Date</th>
+            <th class="Hide-Sort">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+
+                <td>
+
+                    @Html.ValueFor(modelItem => item.IsAdmin)
+                </td>
+
+                <td>
+
+                    @Html.ValueFor(modelItem => item.IsSuperAdmin)
+                </td>
+
+                <td>
+                    @{
+                        string parameterValue = DateTime.Parse(item.date.ToString()).ToLongDateString();
+
+                    }
+
+                    @Html.DisplayFor(model => parameterValue)
+                </td>
+
+                <td style="padding:14px 0 0 8px; border-top:none; border-right:none; border-bottom:none; width:45px;">
+                    <span class="action_button">
+                        <a title="Delete User" href="@Url.Action("Deleteuser","User",new { id = item.UserId })">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+
+</table>
