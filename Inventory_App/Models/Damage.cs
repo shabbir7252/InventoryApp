@@ -24,6 +24,6 @@ namespace Inventory_App.Models
         public Nullable<System.DateTime> ReplacedDateTime { get; set; }
         public string Attachment { get; set; }
     
-        public virtual AddInktoStore AddInktoStore { get; set; }
+        public virtual InkInventory InkInventory { get; set; }
     }
 }

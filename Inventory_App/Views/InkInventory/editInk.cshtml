@@ -1,4 +1,4 @@
-﻿@model Inventory_App.Models.AddInktoStore
+﻿@model Inventory_App.Models.InkInventory
 @using Inventory_App.Models;
 
 @{
@@ -48,7 +48,7 @@
                     @{
                         InventoryAppEntities db = new InventoryAppEntities();
                         var UrlID = int.Parse(Url.RequestContext.RouteData.Values["id"].ToString());
-                        int maxNum = db.AddInktoStores.Single(a => a.InkId == UrlID).Quantity;
+                        int maxNum = db.InkInventories.Single(a => a.InkId == UrlID).Quantity;
                     }
 
 

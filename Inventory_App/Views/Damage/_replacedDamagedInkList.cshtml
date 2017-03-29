@@ -40,13 +40,13 @@
                 <tr>
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.AddInktoStore.Store.Store1)
+                        @Html.DisplayFor(modelItem => item.InkInventory.Store.Store1)
                     </td>
 
                     <td>
 
                         @{
-                            string str = Html.DisplayFor(modelItem => item.AddInktoStore.Model.ColorName).ToString();
+                            string str = Html.DisplayFor(modelItem => item.InkInventory.Model.ColorName).ToString();
                             string firstLetters = "";
 
                             foreach (var part in str.Split(' '))
@@ -55,11 +55,9 @@
                             }
                             str = str.Replace(" ", "");
                         }
-                        <div id="colorBadge" class="badge @str">@firstLetters</div>
+                        <label>@Html.DisplayFor(modelItem => item.InkInventory.Model.Model_Name)</label>
                         &nbsp;
-                        <label>@Html.DisplayFor(modelItem => item.AddInktoStore.Model.Model_Name)</label>
-                        &nbsp;
-                        <div class="badge">@Html.DisplayFor(modelItem => item.AddInktoStore.Model.Brand.Brand_Name)</div>
+                        <div class="badge  @str">@Html.DisplayFor(modelItem => item.InkInventory.Model.Brand.Brand_Name)</div>
 
                     </td>
 

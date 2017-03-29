@@ -14,7 +14,7 @@ namespace Inventory_App.Controllers
         // ----------------------------- Dashboard -----------------------------
         public ActionResult Index()
         {
-            List<AddInktoStore> allInkQuantity = db.AddInktoStores.ToList();
+            List<InkInventory> allInkQuantity = db.InkInventories.ToList();
             ViewBag.Total = allInkQuantity.Sum(x => x.Quantity);
             return View();
         }

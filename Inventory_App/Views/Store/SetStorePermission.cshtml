@@ -77,7 +77,8 @@
     <script>
         $(document).ready(function () {
 
-            $('#myTable').DataTable({
+            $('#tbl_StoreUser').DataTable({
+                "aaSorting": [[2, "desc"]],
                 fixedHeader: true,
                 dom: 'lfBtipr',
                 buttons: [

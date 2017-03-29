@@ -198,10 +198,11 @@ namespace Inventory_App.Controllers
 
         public ActionResult wipeOutInkModel(int? id)
         {
-            int modelCount = db.AddInktoStores.Where(a => a.Model_Id == id).Count();
+            int modelCount = db.InkInventories.Where(a => a.Model_Id == id).Count();
             if (modelCount > 0)
             {
-                ViewBag.alertexistInkModel = MvcHtmlString.Create("Cannot Wipeout as the model is in use in Store. If you cant find the model in Store and still need to delete from here! Contact Administrator");
+                ViewBag.alertexistInkModel = MvcHtmlString.Create(
+                    "<h4><strong> Cannot Wipeout model! <strong></h4>Model is in use inside Ink Inventory.");
                 TempData["wipeout"] = ViewBag.alertexistInkModel;
                 return RedirectToAction("restoreInkModel");
             }

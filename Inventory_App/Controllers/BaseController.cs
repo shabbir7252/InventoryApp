@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Mvc;
 using Inventory_App.Models;
 using System.Data.Entity;
-using System.DirectoryServices.AccountManagement;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -81,25 +80,39 @@ namespace Inventory_App.Controllers
         {
             int UserSessionId = int.Parse(Session["UserID"].ToString());
             List<int> StoreIdList = db.StoreUsers.Where(a => a.UserId == UserSessionId && a.IsPermitted == true).Select(a => a.Store_Id).ToList();
-            ViewBag.ModelList = new SelectList(db.AddInktoStores.Where(a => StoreIdList.Contains(a.Store_Id) && a.Quantity > 0), "InkId", "Model.Model_Name");
+            ViewBag.ModelList = new SelectList(db.InkInventories.Where(a => StoreIdList.Contains(a.Store_Id) && a.Quantity > 0), "InkId", "Model.Model_Name");
         }
 
         protected void updateQuantity(int inkId, bool action, int quantity)
         {
-            AddInktoStore AddInktoStore = db.AddInktoStores.Find(inkId);
+            InkInventory AddInktoInventory = db.InkInventories.Find(inkId);
             if (action)
-                AddInktoStore.Quantity = AddInktoStore.Quantity + quantity;
+                AddInktoInventory.Quantity = AddInktoInventory.Quantity + quantity;
             else
-                AddInktoStore.Quantity = AddInktoStore.Quantity - quantity;
-            db.Entry(AddInktoStore).State = EntityState.Modified;
+                AddInktoInventory.Quantity = AddInktoInventory.Quantity - quantity;
+            db.Entry(AddInktoInventory).State = EntityState.Modified;
             db.SaveChanges(); //Saving Changes
+        }
+
+        [HttpPost]
+        public int GetQuantity(int Id)
+        {
+            int maxvalue = db.InkInventories.Single(a => a.InkId == Id).Quantity;
+            return maxvalue;
         }
 
         [HttpPost]
         public JsonResult GetStore(int Id)
         {
-            string storeName = db.AddInktoStores.Single(a => a.InkId == Id).Store.Store1;
+            string storeName = db.InkInventories.Single(a => a.InkId == Id).Store.Store1;
             return Json(storeName);
+        }
+
+        [HttpPost]
+        public JsonResult GetColor(int Id)
+        {
+            string colorName = db.InkInventories.Single(a => a.InkId == Id).Model.ColorName;
+            return Json(colorName);
         }
 
         public List<string> GetFileList(string pathName)
@@ -118,27 +131,46 @@ namespace Inventory_App.Controllers
             return searchFileNamesList;
         }
 
-        public static string GetLocalIPAddress()
-        {
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        return ip.ToString();
-                    }
-                }
-                return "Local IP Address Not Found!";
-            }
+        //public static string GetLocalIPAddress()
+        //{
+        //    if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+        //    {
+        //        var host = Dns.GetHostEntry(Dns.GetHostName());
+        //        foreach (var ip in host.AddressList)
+        //        {
+        //            if (ip.AddressFamily == AddressFamily.InterNetwork)
+        //            {
+        //                return ip.ToString();
+        //            }
+        //        }
+        //        return "Local IP Address Not Found!";
+        //    }
 
-            return "Network Not Available";
-        }
+        //    return "Network Not Available";
+        //}
 
         protected void updateActivity(string user, DateTime datetime, string activity, string controller, string function)
         {
 
+        }
+
+        protected bool deleteFileName(string AttachmentPath)
+        {
+            var path = Server.MapPath("~/Content/IssueImage/");
+            if (Directory.Exists(path))
+            {
+                string[] fileEntries = Directory.GetFiles(path);
+                foreach (string fileName in fileEntries)
+                {
+                    string fileNamefromPath = Path.GetFileName(fileName);
+                    if (fileNamefromPath == AttachmentPath)
+                        System.IO.File.Delete(fileName);
+                    else
+                        return false;
+                }
+            }
+
+            return true;
         }
     }
 

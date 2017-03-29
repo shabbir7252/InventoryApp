@@ -15,8 +15,8 @@ namespace Inventory_App.Controllers
 
         public ActionResult _UserList()
         {
-            var listview = db.Users.OrderByDescending(a => a.UserName).ToList();
-            return PartialView("_UserList", listview);
+            var userListview = db.Users.OrderByDescending(a => a.UserName).ToList();
+            return PartialView("_UserList", userListview);
         }
 
         [HttpGet]

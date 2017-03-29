@@ -115,9 +115,9 @@
                         <div class="row">
 
                             <div class="col-lg-2 col-lg-offset-2">
-                                <label class="control-label">Model</label>
+                                <label>Model <span class="label" style="background-color:#663399" id="storeName"></span></label>
                                 @Html.DropDownList("ModelList", null, "Select Model...", new { @class = "form-control", @id = "modelchange" })
-                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label label-info" id="storeName"></span></label>
+                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label" id="storeQuantity"></span></label>
                             </div>
 
                             <div class="col-lg-3">
@@ -155,6 +155,37 @@
     <script type="text/javascript">
         var focusKeyId = "@ViewBag.focusKeyId";
 
+        //------------------------------------------------------------------------------//
+
+        //-----------------  To get the max value and assign the max value to quantity ---------------//
+
+        $("#modelchange").change(function () {
+            $("#AssignQuantity").val("1");
+            $("#AssignQuantity").prop('disabled', false);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetQuantity")', // we are calling json method
+                dataType: 'json',
+                data: { Id: $("#modelchange").val() },
+                success: function (maxvalue) {
+                    if (maxvalue <= 0) {
+                        $("#AssignQuantity").prop('disabled', true);
+                    }
+                    else {
+                        $("#AssignQuantity").attr("max", maxvalue);
+
+                        $('#storeQuantity').text("Available Ink : " + maxvalue);
+                    }
+                },
+                error: function (ex) {
+                    alert('Failed to load Max Value. Please Contact Your System Administrator' + ex);
+                }
+
+
+            });
+            return false;
+        })
+
         $(document).ready(function () {
             $("#modelchange").change(function () {
                 $.ajax({
@@ -173,6 +204,30 @@
                 });
                 return false;
             })
+
+            $("#modelchange").change(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetColor")', // we are calling json method inkColor
+                    dataType: 'json',
+                    data: { Id: $("#modelchange").val() },
+                    success: function (colorName) {
+                        document.getElementById("storeQuantity").style.backgroundColor = colorName;
+                        if (colorName == "Black" || colorName == "Magenta")
+                            document.getElementById("storeQuantity").style.color = "#fff";
+                        else
+                            document.getElementById("storeQuantity").style.color = "#000";
+                    },
+                    error: function (ex) {
+                        alert('Failed to load color. Please Contact Your System Administrator' + ex);
+                    }
+
+
+                });
+                return false;
+            })
+
+            //------------------------------------------------------------------------------//
 
             if (focusKeyId != null || focusKeyId != "") {
                 id = focusKeyId;
@@ -204,7 +259,7 @@
 
             });
 
-            
+
             $("#searchFileNamesList").change(function () {
                 if ($("#searchFileNamesList").val() != null) {
                     if ($("#searchFileNamesList").val() == "") {

@@ -17,7 +17,7 @@ namespace Inventory_App.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Model()
         {
-            this.AddInktoStores = new HashSet<AddInktoStore>();
+            this.InkInventories = new HashSet<InkInventory>();
         }
     
         public int Model_Id { get; set; }
@@ -27,8 +27,8 @@ namespace Inventory_App.Models
         public System.DateTime Date { get; set; }
         public bool IsDeleted { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AddInktoStore> AddInktoStores { get; set; }
         public virtual Brand Brand { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<InkInventory> InkInventories { get; set; }
     }
 }

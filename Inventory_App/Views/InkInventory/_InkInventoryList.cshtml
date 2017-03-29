@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Inventory_App.Models.AddInktoStore>
+﻿@model IEnumerable<Inventory_App.Models.InkInventory>
 
 <style>
     .action_button {
@@ -63,11 +63,10 @@
                         }
                         str = str.Replace(" ", "");
                     }
-                    <div id="colorBadge" class="badge @str">@firstLetters</div>
-                    &nbsp;
+                    
                     <label>@Html.DisplayFor(modelItem => item.Model.Model_Name)</label>
                     &nbsp;
-                    <div class="badge">@Html.DisplayFor(modelItem => item.Model.Brand.Brand_Name)</div>
+                    <div class="badge  @str">@Html.DisplayFor(modelItem => item.Model.Brand.Brand_Name)</div>
 
                 </td>
 

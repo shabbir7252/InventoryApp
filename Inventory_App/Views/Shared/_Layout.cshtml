@@ -14,9 +14,9 @@
 
     <title>PSC Inventory System</title>
 
-    @Styles.Render("~/Content/Stylesheet/datatables")
-
     @Styles.Render("~/Content/bootstrap")
+
+    @Styles.Render("~/Content/Stylesheet/datatables")
 
     <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
@@ -103,7 +103,7 @@
                                                         @Html.ActionLink("Manage Ink Model", "addInkModel", "Model")
                                                     </li>
                                                     <li>
-                                                        @Html.ActionLink("Manage Device Type", "addInkModel", "Model")
+                                                        @Html.ActionLink("Manage Device Type", "Index", "DeviceType")
                                                     </li>
                                                 </ul>
                                             </li>
@@ -122,16 +122,16 @@
                             }
 
                             @*<li>
-                                <a href="#"><i class="fa fa-desktop fa-fw"></i> Devices<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                </ul>
-                            </li>*@
+                                    <a href="#"><i class="fa fa-desktop fa-fw"></i> Devices<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                    </ul>
+                                </li>*@
 
                             <li>
                                 <a href="#"><i class="fa fa-tasks fa-fw"></i> Ink Cartridge<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
                                     <li>
-                                        @Html.ActionLink("Ink Inventory", "AddInkPlus", "AddInk")
+                                        @Html.ActionLink("Ink Inventory", "AddInk", "InkInventory")
                                     </li>
                                     <li>
                                         @Html.ActionLink("Issue Ink", "Index", "IssueInk")

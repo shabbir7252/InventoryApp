@@ -5,18 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="InventoryAppModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="AddInktoStore">
-          <Key>
-            <PropertyRef Name="InkId" />
-          </Key>
-          <Property Name="InkId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Model_Id" Type="int" Nullable="false" />
-          <Property Name="Store_Id" Type="int" Nullable="false" />
-          <Property Name="Date" Type="datetime" Nullable="false" />
-          <Property Name="YearID" Type="int" Nullable="false" />
-          <Property Name="Attachment_Path" Type="varchar(max)" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Brand">
           <Key>
             <PropertyRef Name="Brand_Id" />
@@ -46,6 +34,18 @@
           <Property Name="IsReplaced" Type="bit" Nullable="false" />
           <Property Name="ReplacedDateTime" Type="datetime" />
           <Property Name="Attachment" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="InkInventory">
+          <Key>
+            <PropertyRef Name="InkId" />
+          </Key>
+          <Property Name="InkId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Model_Id" Type="int" Nullable="false" />
+          <Property Name="Store_Id" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="YearID" Type="int" Nullable="false" />
+          <Property Name="Attachment_Path" Type="varchar(max)" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="IssueInk">
           <Key>
@@ -108,36 +108,36 @@
         </EntityType>
         <Association Name="FK_AddInk_Model">
           <End Role="Model" Type="Self.Model" Multiplicity="1" />
-          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="*" />
+          <End Role="InkInventory" Type="Self.InkInventory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Model">
               <PropertyRef Name="Model_Id" />
             </Principal>
-            <Dependent Role="AddInktoStore">
+            <Dependent Role="InkInventory">
               <PropertyRef Name="Model_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AddInk_Store">
           <End Role="Store" Type="Self.Store" Multiplicity="1" />
-          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="*" />
+          <End Role="InkInventory" Type="Self.InkInventory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Store">
               <PropertyRef Name="Store_Id" />
             </Principal>
-            <Dependent Role="AddInktoStore">
+            <Dependent Role="InkInventory">
               <PropertyRef Name="Store_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AddInk_Years">
           <End Role="Years" Type="Self.Years" Multiplicity="1" />
-          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="*" />
+          <End Role="InkInventory" Type="Self.InkInventory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Years">
               <PropertyRef Name="YearID" />
             </Principal>
-            <Dependent Role="AddInktoStore">
+            <Dependent Role="InkInventory">
               <PropertyRef Name="YearID" />
             </Dependent>
           </ReferentialConstraint>
@@ -155,10 +155,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Damage_AddInktoStore">
-          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="1" />
+          <End Role="InkInventory" Type="Self.InkInventory" Multiplicity="1" />
           <End Role="Damage" Type="Self.Damage" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="AddInktoStore">
+            <Principal Role="InkInventory">
               <PropertyRef Name="InkId" />
             </Principal>
             <Dependent Role="Damage">
@@ -167,10 +167,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_IssueInk_AddInktoStore">
-          <End Role="AddInktoStore" Type="Self.AddInktoStore" Multiplicity="1" />
+          <End Role="InkInventory" Type="Self.InkInventory" Multiplicity="1" />
           <End Role="IssueInk" Type="Self.IssueInk" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="AddInktoStore">
+            <Principal Role="InkInventory">
               <PropertyRef Name="InkId" />
             </Principal>
             <Dependent Role="IssueInk">
@@ -251,10 +251,10 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="InventoryAppModelStoreContainer">
-          <EntitySet Name="AddInktoStore" EntityType="Self.AddInktoStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Damage" EntityType="Self.Damage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InkInventory" EntityType="Self.InkInventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IssueInk" EntityType="Self.IssueInk" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Model" EntityType="Self.Model" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
@@ -263,26 +263,26 @@
           <EntitySet Name="Years" EntityType="Self.Years" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AddInk_Model" Association="Self.FK_AddInk_Model">
             <End Role="Model" EntitySet="Model" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="InkInventory" EntitySet="InkInventory" />
           </AssociationSet>
           <AssociationSet Name="FK_AddInk_Store" Association="Self.FK_AddInk_Store">
             <End Role="Store" EntitySet="Store" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="InkInventory" EntitySet="InkInventory" />
           </AssociationSet>
           <AssociationSet Name="FK_AddInk_Years" Association="Self.FK_AddInk_Years">
             <End Role="Years" EntitySet="Years" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="InkInventory" EntitySet="InkInventory" />
           </AssociationSet>
           <AssociationSet Name="FK_Brand_Years" Association="Self.FK_Brand_Years">
             <End Role="Years" EntitySet="Years" />
             <End Role="Brand" EntitySet="Brand" />
           </AssociationSet>
           <AssociationSet Name="FK_Damage_AddInktoStore" Association="Self.FK_Damage_AddInktoStore">
-            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="InkInventory" EntitySet="InkInventory" />
             <End Role="Damage" EntitySet="Damage" />
           </AssociationSet>
           <AssociationSet Name="FK_IssueInk_AddInktoStore" Association="Self.FK_IssueInk_AddInktoStore">
-            <End Role="AddInktoStore" EntitySet="AddInktoStore" />
+            <End Role="InkInventory" EntitySet="InkInventory" />
             <End Role="IssueInk" EntitySet="IssueInk" />
           </AssociationSet>
           <AssociationSet Name="FK_IssueInk_Years" Association="Self.FK_IssueInk_Years">
@@ -315,31 +315,16 @@
     <edmx:ConceptualModels>
       <Schema Namespace="InventoryAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="InventoryAppEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AddInktoStores" EntityType="InventoryAppModel.AddInktoStore" />
           <EntitySet Name="Brands" EntityType="InventoryAppModel.Brand" />
           <EntitySet Name="Countries" EntityType="InventoryAppModel.Country" />
+          <EntitySet Name="Damages" EntityType="InventoryAppModel.Damage" />
+          <EntitySet Name="InkInventories" EntityType="InventoryAppModel.InkInventory" />
           <EntitySet Name="IssueInks" EntityType="InventoryAppModel.IssueInk" />
           <EntitySet Name="Models" EntityType="InventoryAppModel.Model" />
           <EntitySet Name="Stores" EntityType="InventoryAppModel.Store" />
           <EntitySet Name="StoreUsers" EntityType="InventoryAppModel.StoreUser" />
           <EntitySet Name="Users" EntityType="InventoryAppModel.User" />
           <EntitySet Name="Years" EntityType="InventoryAppModel.Year" />
-          <AssociationSet Name="FK_AddInk_Model" Association="InventoryAppModel.FK_AddInk_Model">
-            <End Role="Model" EntitySet="Models" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AddInk_Store" Association="InventoryAppModel.FK_AddInk_Store">
-            <End Role="Store" EntitySet="Stores" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AddInk_Years" Association="InventoryAppModel.FK_AddInk_Years">
-            <End Role="Year" EntitySet="Years" />
-            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
-          </AssociationSet>
-          <AssociationSet Name="FK_IssueInk_AddInktoStore" Association="InventoryAppModel.FK_IssueInk_AddInktoStore">
-            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
-            <End Role="IssueInk" EntitySet="IssueInks" />
-          </AssociationSet>
           <AssociationSet Name="FK_Brand_Years" Association="InventoryAppModel.FK_Brand_Years">
             <End Role="Year" EntitySet="Years" />
             <End Role="Brand" EntitySet="Brands" />
@@ -351,6 +336,26 @@
           <AssociationSet Name="FK_Store_Countries" Association="InventoryAppModel.FK_Store_Countries">
             <End Role="Country" EntitySet="Countries" />
             <End Role="Store" EntitySet="Stores" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Damage_AddInktoStore" Association="InventoryAppModel.FK_Damage_AddInktoStore">
+            <End Role="InkInventory" EntitySet="InkInventories" />
+            <End Role="Damage" EntitySet="Damages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddInk_Model" Association="InventoryAppModel.FK_AddInk_Model">
+            <End Role="Model" EntitySet="Models" />
+            <End Role="InkInventory" EntitySet="InkInventories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddInk_Store" Association="InventoryAppModel.FK_AddInk_Store">
+            <End Role="Store" EntitySet="Stores" />
+            <End Role="InkInventory" EntitySet="InkInventories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddInk_Years" Association="InventoryAppModel.FK_AddInk_Years">
+            <End Role="Year" EntitySet="Years" />
+            <End Role="InkInventory" EntitySet="InkInventories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IssueInk_AddInktoStore" Association="InventoryAppModel.FK_IssueInk_AddInktoStore">
+            <End Role="InkInventory" EntitySet="InkInventories" />
+            <End Role="IssueInk" EntitySet="IssueInks" />
           </AssociationSet>
           <AssociationSet Name="FK_IssueInk_Years" Association="InventoryAppModel.FK_IssueInk_Years">
             <End Role="Year" EntitySet="Years" />
@@ -368,29 +373,7 @@
             <End Role="User" EntitySet="Users" />
             <End Role="StoreUser" EntitySet="StoreUsers" />
           </AssociationSet>
-          <EntitySet Name="Damages" EntityType="InventoryAppModel.Damage" />
-          <AssociationSet Name="FK_Damage_AddInktoStore" Association="InventoryAppModel.FK_Damage_AddInktoStore">
-            <End Role="AddInktoStore" EntitySet="AddInktoStores" />
-            <End Role="Damage" EntitySet="Damages" />
-          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="AddInktoStore">
-          <Key>
-            <PropertyRef Name="InkId" />
-          </Key>
-          <Property Name="InkId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Model_Id" Type="Int32" Nullable="false" />
-          <Property Name="Store_Id" Type="Int32" Nullable="false" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="YearID" Type="Int32" Nullable="false" />
-          <Property Name="Attachment_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Model" Relationship="InventoryAppModel.FK_AddInk_Model" FromRole="AddInktoStore" ToRole="Model" />
-          <NavigationProperty Name="Store" Relationship="InventoryAppModel.FK_AddInk_Store" FromRole="AddInktoStore" ToRole="Store" />
-          <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_AddInk_Years" FromRole="AddInktoStore" ToRole="Year" />
-          <NavigationProperty Name="IssueInks" Relationship="InventoryAppModel.FK_IssueInk_AddInktoStore" FromRole="AddInktoStore" ToRole="IssueInk" />
-          <NavigationProperty Name="Damages" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="AddInktoStore" ToRole="Damage" />
-        </EntityType>
         <EntityType Name="Brand">
           <Key>
             <PropertyRef Name="Brand_Id" />
@@ -410,6 +393,38 @@
           <Property Name="CountryName" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Stores" Relationship="InventoryAppModel.FK_Store_Countries" FromRole="Country" ToRole="Store" />
         </EntityType>
+        <EntityType Name="Damage">
+          <Key>
+            <PropertyRef Name="DamageId" />
+          </Key>
+          <Property Name="DamageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InkId" Type="Int32" Nullable="false" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Serial" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDisposed" Type="Boolean" Nullable="false" />
+          <Property Name="DisposedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsReplaced" Type="Boolean" Nullable="false" />
+          <Property Name="ReplacedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Attachment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="InkInventory" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="Damage" ToRole="InkInventory" />
+        </EntityType>
+        <EntityType Name="InkInventory">
+          <Key>
+            <PropertyRef Name="InkId" />
+          </Key>
+          <Property Name="InkId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Model_Id" Type="Int32" Nullable="false" />
+          <Property Name="Store_Id" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="YearID" Type="Int32" Nullable="false" />
+          <Property Name="Attachment_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Damages" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="InkInventory" ToRole="Damage" />
+          <NavigationProperty Name="Model" Relationship="InventoryAppModel.FK_AddInk_Model" FromRole="InkInventory" ToRole="Model" />
+          <NavigationProperty Name="Store" Relationship="InventoryAppModel.FK_AddInk_Store" FromRole="InkInventory" ToRole="Store" />
+          <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_AddInk_Years" FromRole="InkInventory" ToRole="Year" />
+          <NavigationProperty Name="IssueInks" Relationship="InventoryAppModel.FK_IssueInk_AddInktoStore" FromRole="InkInventory" ToRole="IssueInk" />
+        </EntityType>
         <EntityType Name="IssueInk">
           <Key>
             <PropertyRef Name="IssueInkId" />
@@ -421,7 +436,7 @@
           <Property Name="YearID" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Attachment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="AddInktoStore" Relationship="InventoryAppModel.FK_IssueInk_AddInktoStore" FromRole="IssueInk" ToRole="AddInktoStore" />
+          <NavigationProperty Name="InkInventory" Relationship="InventoryAppModel.FK_IssueInk_AddInktoStore" FromRole="IssueInk" ToRole="InkInventory" />
           <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_IssueInk_Years" FromRole="IssueInk" ToRole="Year" />
         </EntityType>
         <EntityType Name="Model">
@@ -434,8 +449,8 @@
           <Property Name="ColorName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="AddInktoStores" Relationship="InventoryAppModel.FK_AddInk_Model" FromRole="Model" ToRole="AddInktoStore" />
           <NavigationProperty Name="Brand" Relationship="InventoryAppModel.FK_Model_Brand" FromRole="Model" ToRole="Brand" />
+          <NavigationProperty Name="InkInventories" Relationship="InventoryAppModel.FK_AddInk_Model" FromRole="Model" ToRole="InkInventory" />
         </EntityType>
         <EntityType Name="Store">
           <Key>
@@ -446,8 +461,8 @@
           <Property Name="Store1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="YearID" Type="Int32" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="AddInktoStores" Relationship="InventoryAppModel.FK_AddInk_Store" FromRole="Store" ToRole="AddInktoStore" />
           <NavigationProperty Name="Country" Relationship="InventoryAppModel.FK_Store_Countries" FromRole="Store" ToRole="Country" />
+          <NavigationProperty Name="InkInventories" Relationship="InventoryAppModel.FK_AddInk_Store" FromRole="Store" ToRole="InkInventory" />
           <NavigationProperty Name="Year" Relationship="InventoryAppModel.FK_Store_Years" FromRole="Store" ToRole="Year" />
           <NavigationProperty Name="StoreUsers" Relationship="InventoryAppModel.FK_StoreUsers_Store" FromRole="Store" ToRole="StoreUser" />
         </EntityType>
@@ -479,59 +494,11 @@
           </Key>
           <Property Name="YearID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Year1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AddInktoStores" Relationship="InventoryAppModel.FK_AddInk_Years" FromRole="Year" ToRole="AddInktoStore" />
           <NavigationProperty Name="Brands" Relationship="InventoryAppModel.FK_Brand_Years" FromRole="Year" ToRole="Brand" />
+          <NavigationProperty Name="InkInventories" Relationship="InventoryAppModel.FK_AddInk_Years" FromRole="Year" ToRole="InkInventory" />
           <NavigationProperty Name="IssueInks" Relationship="InventoryAppModel.FK_IssueInk_Years" FromRole="Year" ToRole="IssueInk" />
           <NavigationProperty Name="Stores" Relationship="InventoryAppModel.FK_Store_Years" FromRole="Year" ToRole="Store" />
         </EntityType>
-        <Association Name="FK_AddInk_Model">
-          <End Type="InventoryAppModel.Model" Role="Model" Multiplicity="1" />
-          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Model">
-              <PropertyRef Name="Model_Id" />
-            </Principal>
-            <Dependent Role="AddInktoStore">
-              <PropertyRef Name="Model_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AddInk_Store">
-          <End Type="InventoryAppModel.Store" Role="Store" Multiplicity="1" />
-          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Store">
-              <PropertyRef Name="Store_Id" />
-            </Principal>
-            <Dependent Role="AddInktoStore">
-              <PropertyRef Name="Store_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AddInk_Years">
-          <End Type="InventoryAppModel.Year" Role="Year" Multiplicity="1" />
-          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Year">
-              <PropertyRef Name="YearID" />
-            </Principal>
-            <Dependent Role="AddInktoStore">
-              <PropertyRef Name="YearID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_IssueInk_AddInktoStore">
-          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="1" />
-          <End Type="InventoryAppModel.IssueInk" Role="IssueInk" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AddInktoStore">
-              <PropertyRef Name="InkId" />
-            </Principal>
-            <Dependent Role="IssueInk">
-              <PropertyRef Name="InkId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Brand_Years">
           <End Type="InventoryAppModel.Year" Role="Year" Multiplicity="1" />
           <End Type="InventoryAppModel.Brand" Role="Brand" Multiplicity="*" />
@@ -565,6 +532,66 @@
             </Principal>
             <Dependent Role="Store">
               <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Damage_AddInktoStore">
+          <End Type="InventoryAppModel.InkInventory" Role="InkInventory" Multiplicity="1" />
+          <End Type="InventoryAppModel.Damage" Role="Damage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InkInventory">
+              <PropertyRef Name="InkId" />
+            </Principal>
+            <Dependent Role="Damage">
+              <PropertyRef Name="InkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddInk_Model">
+          <End Type="InventoryAppModel.Model" Role="Model" Multiplicity="1" />
+          <End Type="InventoryAppModel.InkInventory" Role="InkInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Model">
+              <PropertyRef Name="Model_Id" />
+            </Principal>
+            <Dependent Role="InkInventory">
+              <PropertyRef Name="Model_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddInk_Store">
+          <End Type="InventoryAppModel.Store" Role="Store" Multiplicity="1" />
+          <End Type="InventoryAppModel.InkInventory" Role="InkInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Store">
+              <PropertyRef Name="Store_Id" />
+            </Principal>
+            <Dependent Role="InkInventory">
+              <PropertyRef Name="Store_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddInk_Years">
+          <End Type="InventoryAppModel.Year" Role="Year" Multiplicity="1" />
+          <End Type="InventoryAppModel.InkInventory" Role="InkInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Year">
+              <PropertyRef Name="YearID" />
+            </Principal>
+            <Dependent Role="InkInventory">
+              <PropertyRef Name="YearID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IssueInk_AddInktoStore">
+          <End Type="InventoryAppModel.InkInventory" Role="InkInventory" Multiplicity="1" />
+          <End Type="InventoryAppModel.IssueInk" Role="IssueInk" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InkInventory">
+              <PropertyRef Name="InkId" />
+            </Principal>
+            <Dependent Role="IssueInk">
+              <PropertyRef Name="InkId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -616,52 +643,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Damage">
-          <Key>
-            <PropertyRef Name="DamageId" />
-          </Key>
-          <Property Name="DamageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="InkId" Type="Int32" Nullable="false" />
-          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Serial" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IsDisposed" Type="Boolean" Nullable="false" />
-          <Property Name="DisposedDateTime" Type="DateTime" Precision="3" />
-          <Property Name="IsReplaced" Type="Boolean" Nullable="false" />
-          <Property Name="ReplacedDateTime" Type="DateTime" Precision="3" />
-          <Property Name="Attachment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="AddInktoStore" Relationship="InventoryAppModel.FK_Damage_AddInktoStore" FromRole="Damage" ToRole="AddInktoStore" />
-        </EntityType>
-        <Association Name="FK_Damage_AddInktoStore">
-          <End Type="InventoryAppModel.AddInktoStore" Role="AddInktoStore" Multiplicity="1" />
-          <End Type="InventoryAppModel.Damage" Role="Damage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AddInktoStore">
-              <PropertyRef Name="InkId" />
-            </Principal>
-            <Dependent Role="Damage">
-              <PropertyRef Name="InkId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="InventoryAppModelStoreContainer" CdmEntityContainer="InventoryAppEntities">
-          <EntitySetMapping Name="AddInktoStores">
-            <EntityTypeMapping TypeName="InventoryAppModel.AddInktoStore">
-              <MappingFragment StoreEntitySet="AddInktoStore">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Attachment_Path" ColumnName="Attachment_Path" />
-                <ScalarProperty Name="YearID" ColumnName="YearID" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
-                <ScalarProperty Name="Model_Id" ColumnName="Model_Id" />
-                <ScalarProperty Name="InkId" ColumnName="InkId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Brands">
             <EntityTypeMapping TypeName="InventoryAppModel.Brand">
               <MappingFragment StoreEntitySet="Brand">
@@ -677,6 +664,34 @@
               <MappingFragment StoreEntitySet="Countries">
                 <ScalarProperty Name="CountryName" ColumnName="CountryName" />
                 <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Damages">
+            <EntityTypeMapping TypeName="InventoryAppModel.Damage">
+              <MappingFragment StoreEntitySet="Damage">
+                <ScalarProperty Name="Attachment" ColumnName="Attachment" />
+                <ScalarProperty Name="ReplacedDateTime" ColumnName="ReplacedDateTime" />
+                <ScalarProperty Name="IsReplaced" ColumnName="IsReplaced" />
+                <ScalarProperty Name="DisposedDateTime" ColumnName="DisposedDateTime" />
+                <ScalarProperty Name="IsDisposed" ColumnName="IsDisposed" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="InkId" ColumnName="InkId" />
+                <ScalarProperty Name="DamageId" ColumnName="DamageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InkInventories">
+            <EntityTypeMapping TypeName="InventoryAppModel.InkInventory">
+              <MappingFragment StoreEntitySet="InkInventory">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Attachment_Path" ColumnName="Attachment_Path" />
+                <ScalarProperty Name="YearID" ColumnName="YearID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Store_Id" ColumnName="Store_Id" />
+                <ScalarProperty Name="Model_Id" ColumnName="Model_Id" />
+                <ScalarProperty Name="InkId" ColumnName="InkId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -742,21 +757,6 @@
               <MappingFragment StoreEntitySet="Years">
                 <ScalarProperty Name="Year1" ColumnName="Year" />
                 <ScalarProperty Name="YearID" ColumnName="YearID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Damages">
-            <EntityTypeMapping TypeName="InventoryAppModel.Damage">
-              <MappingFragment StoreEntitySet="Damage">
-                <ScalarProperty Name="Attachment" ColumnName="Attachment" />
-                <ScalarProperty Name="ReplacedDateTime" ColumnName="ReplacedDateTime" />
-                <ScalarProperty Name="IsReplaced" ColumnName="IsReplaced" />
-                <ScalarProperty Name="DisposedDateTime" ColumnName="DisposedDateTime" />
-                <ScalarProperty Name="IsDisposed" ColumnName="IsDisposed" />
-                <ScalarProperty Name="Serial" ColumnName="Serial" />
-                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
-                <ScalarProperty Name="InkId" ColumnName="InkId" />
-                <ScalarProperty Name="DamageId" ColumnName="DamageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

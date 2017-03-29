@@ -156,6 +156,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="App_Data\colors.json" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_Data\deviceType.json" />
     <None Include="Properties\PublishProfiles\Inventory.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -165,17 +169,22 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\site.js" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Default\Index.cshtml" />
+    <Content Include="Views\DeviceType\Index.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AddInkController.cs" />
+    <Compile Include="Controllers\DeviceTypeController.cs" />
+    <Compile Include="Controllers\InkInventoryController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandController.cs" />
     <Compile Include="Controllers\DamageController.cs" />
@@ -188,9 +197,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AddInktoStore.cs">
-      <DependentUpon>InventoryAppModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Brand.cs">
       <DependentUpon>InventoryAppModel.tt</DependentUpon>
     </Compile>
@@ -199,6 +205,10 @@
     </Compile>
     <Compile Include="Models\customStoreUser.cs" />
     <Compile Include="Models\Damage.cs">
+      <DependentUpon>InventoryAppModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\deviceTypeList.cs" />
+    <Compile Include="Models\InkInventory.cs">
       <DependentUpon>InventoryAppModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IssueInk.cs">
@@ -264,11 +274,11 @@
     <Content Include="Views\Model\EditInkModel.cshtml" />
     <Content Include="Views\Model\restoreInkModel.cshtml" />
     <Content Include="Views\Brand\restoreBrands.cshtml" />
-    <Content Include="Views\AddInk\AddInkPlus.cshtml" />
-    <Content Include="Views\AddInk\_AddInkToStoreList.cshtml" />
+    <Content Include="Views\InkInventory\AddInk.cshtml" />
+    <Content Include="Views\InkInventory\_InkInventoryList.cshtml" />
     <Content Include="Views\IssueInk\Index.cshtml" />
     <Content Include="Views\IssueInk\_issuedInkList.cshtml" />
-    <Content Include="Views\AddInk\editInk.cshtml" />
+    <Content Include="Views\InkInventory\editInk.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\_UserList.cshtml" />
     <Content Include="Views\Store\SetStorePermission.cshtml" />
@@ -280,12 +290,6 @@
     <Content Include="Views\Damage\_replacedDamagedInkList.cshtml" />
     <Content Include="Views\Damage\_DisposeDamagedInkList.cshtml" />
     <Content Include="Views\Damage\disposedDamagedInk.cshtml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\damageInkImage\" />

@@ -25,15 +25,15 @@ namespace Inventory_App.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AddInktoStore> AddInktoStores { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
+        public virtual DbSet<Damage> Damages { get; set; }
+        public virtual DbSet<InkInventory> InkInventories { get; set; }
         public virtual DbSet<IssueInk> IssueInks { get; set; }
         public virtual DbSet<Model> Models { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
         public virtual DbSet<StoreUser> StoreUsers { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Year> Years { get; set; }
-        public virtual DbSet<Damage> Damages { get; set; }
     }
 }

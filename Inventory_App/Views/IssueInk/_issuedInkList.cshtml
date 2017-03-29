@@ -65,14 +65,12 @@
 
                 @using (InventoryAppEntities db = new InventoryAppEntities())
                 {
-                    string brandName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Brand.Brand_Name.ToString();
-                    string modelName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.Model_Name.ToString();
-                    string colorName = db.AddInktoStores.Single(a => a.InkId == item.InkId).Model.ColorName.ToString();
+                    string brandName = db.InkInventories.Single(a => a.InkId == item.InkId).Model.Brand.Brand_Name.ToString();
+                    string modelName = db.InkInventories.Single(a => a.InkId == item.InkId).Model.Model_Name.ToString();
+                    string colorName = db.InkInventories.Single(a => a.InkId == item.InkId).Model.ColorName.ToString();
                     <td>
-                        <span class="badge">@brandName</span>
                         <label>@modelName</label>
-                        <span class="badge">@colorName</span>
-
+                        <span class="badge @colorName">@brandName</span>
                     </td>
                 }
 

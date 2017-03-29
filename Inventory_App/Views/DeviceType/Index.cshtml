@@ -1,0 +1,107 @@
+﻿
+
+@{
+    ViewBag.Title = "AddBrand";
+}
+
+<style>
+    #YearID {
+        padding: 10%;
+    }
+
+    .panel {
+        margin-top: 50px;
+    }
+
+        .panel .panel-body {
+            margin: 3% 0;
+        }
+
+    table {
+        margin-top: 5%;
+    }
+
+    table {
+        box-shadow: 0 50px 100px rgba(189, 195, 199,0.94);
+        margin-bottom: 2.5% !important;
+    }
+
+    .table > tbody > tr > td {
+        border-bottom: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #d9edf7;
+        box-shadow: 0 0 10px #bdc3c7;
+    }
+
+    .table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    div.dt-buttons {
+        margin: 0 0 2% 18%;
+    }
+</style>
+
+
+<div id="page-wrapper">
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Add Device Type</h1>
+            @*<button class="btn btn-primary" data-target="#loginModal" data-toggle="modal">Launch Demo</button>*@
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+
+                        <div class="col-lg-3 col-lg-offset-2">
+                            <div class="row">
+                                <div class="col-lg-12 text-left">
+                                    <label>Device Type Name</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Editor("DeviceTypeName", new { htmlAttributes = new { @class = "form-control" } })
+                                    @*@Html.EditorFor(model => model.Brand_Name, new { htmlAttributes = new { @class = "form-control" } })*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4" style="margin-top:23px">
+                            <button id="alert" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                            @*@{
+                                InventoryAppEntities db = new InventoryAppEntities();
+                                var modelm = db.Brands.Where(a => a.IsDeleted == true).Count();
+                                if (modelm > 0)
+                                {
+                                    <a href="@Url.Action("restoreBrands")" class="btn btn-warning btnRestore"><i class="fa fa-repeat" aria-hidden="true"></i> Restore Brands</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning btnRestore" disabled="disabled">
+                                        <i class="fa fa-repeat" aria-hidden="true"></i> Restore Brands
+                                    </button>
+                                }
+                            }*@
+                        </div>
+
+                    </div>
+                </div>
+                                }
+        </div>
+
+
+        @*<div style="padding:0 5%;">
+            @{Html.RenderAction("_BrandList", "Brand");}
+        </div>*@
+    </div>
+
+</div>

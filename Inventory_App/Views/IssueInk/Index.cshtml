@@ -177,11 +177,9 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <label>Model </label>
+                                <label>Model <span class="label" style="background-color:#663399" id="storeName"></span></label>
                                 @Html.DropDownList("modelList", null, "Select Model...", new { @class = "form-control", @id = "modelchange" })
-
-                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label label-info" id="storeName"></span></label>
-                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label label-warning" id="storeQuantity"></span></label>
+                                <label style="font-size: 16px; text-align-last: center; width: 100%;"><span class="label" id="storeQuantity"></span></label>
                             </div>
 
                             <div class="col-lg-2">
@@ -393,7 +391,29 @@
                         $('#storeName').text("Store : " + storeName);
                     },
                     error: function (ex) {
-                        alert('Failed to load store Value. Please Contact Your System Administrator' + ex);
+                        alert('Failed to load store name. Please Contact Your System Administrator' + ex);
+                    }
+
+
+                });
+                return false;
+            })
+
+            $("#modelchange").change(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetColor")', // we are calling json method inkColor
+                    dataType: 'json',
+                    data: { Id: $("#modelchange").val() },
+                    success: function (colorName) {
+                        document.getElementById("storeQuantity").style.backgroundColor = colorName;
+                        if (colorName == "Black" || colorName == "Magenta")
+                            document.getElementById("storeQuantity").style.color = "#fff";
+                        else
+                            document.getElementById("storeQuantity").style.color = "#000";
+                    },
+                    error: function (ex) {
+                        alert('Failed to load color. Please Contact Your System Administrator' + ex);
                     }
 
 

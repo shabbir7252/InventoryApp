@@ -1,4 +1,4 @@
-﻿@model Inventory_App.Models.AddInktoStore
+﻿@model Inventory_App.Models.InkInventory
 
 @{
     ViewBag.Title = "AddInk";
@@ -53,7 +53,7 @@
 
     <div class="panel panel-info">
         <div class="panel-heading">
-            <h1>Add Ink in Store</h1>
+            <h1>Ink Inventory</h1>
 
         </div>
         <div class="panel-body">
@@ -100,7 +100,7 @@
             }
             <hr />
             <div style="padding:0 5%; margin-top:5%">
-                @{Html.RenderAction("_AddInkToStoreList", "AddInk");}
+                @{Html.RenderAction("_InkInventoryList", "InkInventory");}
             </div>
         </div>
     </div>

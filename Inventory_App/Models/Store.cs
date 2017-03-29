@@ -17,7 +17,7 @@ namespace Inventory_App.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Store()
         {
-            this.AddInktoStores = new HashSet<AddInktoStore>();
+            this.InkInventories = new HashSet<InkInventory>();
             this.StoreUsers = new HashSet<StoreUser>();
         }
     
@@ -27,9 +27,9 @@ namespace Inventory_App.Models
         public int YearID { get; set; }
         public bool IsDeleted { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AddInktoStore> AddInktoStores { get; set; }
         public virtual Country Country { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<InkInventory> InkInventories { get; set; }
         public virtual Year Year { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StoreUser> StoreUsers { get; set; }

@@ -22,7 +22,7 @@ namespace Inventory_App.Models
         public int Quantity { get; set; }
         public string Attachment { get; set; }
     
-        public virtual AddInktoStore AddInktoStore { get; set; }
+        public virtual InkInventory InkInventory { get; set; }
         public virtual Year Year { get; set; }
     }
 }

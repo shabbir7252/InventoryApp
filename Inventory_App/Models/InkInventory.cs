@@ -12,13 +12,13 @@ namespace Inventory_App.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AddInktoStore
+    public partial class InkInventory
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public AddInktoStore()
+        public InkInventory()
         {
-            this.IssueInks = new HashSet<IssueInk>();
             this.Damages = new HashSet<Damage>();
+            this.IssueInks = new HashSet<IssueInk>();
         }
     
         public int InkId { get; set; }
@@ -29,12 +29,12 @@ namespace Inventory_App.Models
         public string Attachment_Path { get; set; }
         public int Quantity { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Damage> Damages { get; set; }
         public virtual Model Model { get; set; }
         public virtual Store Store { get; set; }
         public virtual Year Year { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssueInk> IssueInks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Damage> Damages { get; set; }
     }
 }
